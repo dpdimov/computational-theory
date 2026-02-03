@@ -37,6 +37,186 @@ const ComputationalTheoryCanvas = () => {
     }));
   };
 
+  const generateDiagramSVG = () => {
+    if (!selectedLevel) return '';
+    const level = levels[selectedLevel];
+    const width = 800;
+    const height = 1000;
+    const centerX = width / 2;
+    const centerY = 280;
+
+    // Helper to wrap text
+    const wrapText = (text, maxWidth, fontSize = 14) => {
+      if (!text) return [];
+      const words = text.split(' ');
+      const lines = [];
+      let currentLine = '';
+      const charsPerLine = Math.floor(maxWidth / (fontSize * 0.6));
+
+      words.forEach(word => {
+        if ((currentLine + ' ' + word).trim().length <= charsPerLine) {
+          currentLine = (currentLine + ' ' + word).trim();
+        } else {
+          if (currentLine) lines.push(currentLine);
+          currentLine = word;
+        }
+      });
+      if (currentLine) lines.push(currentLine);
+      return lines.slice(0, 4); // Max 4 lines
+    };
+
+    const escapeXml = (str) => {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    };
+
+    // Build sections for the lower part
+    const sections = [];
+    if (userInputs.constructDescription) {
+      sections.push({ title: 'Description', content: userInputs.constructDescription });
+    }
+    if (userInputs.entryPoint) {
+      sections.push({ title: 'Entry Point', content: userInputs.entryPoint + (userInputs.entryPointDetails ? ' — ' + userInputs.entryPointDetails : '') });
+    }
+    if (userInputs.functionalForm) {
+      sections.push({ title: 'Functional Form', content: userInputs.functionalForm + (userInputs.functionalFormDetails ? ' — ' + userInputs.functionalFormDetails : '') });
+    }
+    if (userInputs.pathway.length > 0) {
+      sections.push({ title: 'Causal Pathways', content: userInputs.pathway.join(', ') });
+    }
+    if (userInputs.feedbackLoops) {
+      sections.push({ title: 'Feedback Loops', content: userInputs.feedbackLoops });
+    }
+    if (userInputs.crossLevelUp) {
+      sections.push({ title: 'Upward Effects', content: userInputs.crossLevelUp });
+    }
+    if (userInputs.crossLevelDown) {
+      sections.push({ title: 'Downward Effects', content: userInputs.crossLevelDown });
+    }
+    if (userInputs.boundaryConditions) {
+      sections.push({ title: 'Boundary Conditions', content: userInputs.boundaryConditions });
+    }
+
+    // Calculate dynamic height based on sections
+    const sectionHeight = 70;
+    const calculatedHeight = Math.max(height, 450 + sections.length * sectionHeight);
+
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${calculatedHeight}" width="${width}" height="${calculatedHeight}">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap');
+      .title { font-family: Georgia, serif; font-size: 24px; fill: #1a1a1a; }
+      .subtitle { font-family: Inter, sans-serif; font-size: 14px; fill: #666; }
+      .construct { font-family: Georgia, serif; font-size: 20px; fill: white; font-weight: 500; }
+      .level-badge { font-family: Inter, sans-serif; font-size: 12px; fill: white; font-weight: 500; }
+      .section-title { font-family: Inter, sans-serif; font-size: 11px; fill: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+      .section-content { font-family: Inter, sans-serif; font-size: 13px; fill: #333; }
+      .paper-title { font-family: Inter, sans-serif; font-size: 12px; fill: #888; font-style: italic; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="${width}" height="${calculatedHeight}" fill="#fafafa"/>
+
+  <!-- Header -->
+  <text x="${centerX}" y="40" text-anchor="middle" class="title">Computational Translation</text>
+  ${userInputs.paperTitle ? `<text x="${centerX}" y="65" text-anchor="middle" class="paper-title">from "${escapeXml(userInputs.paperTitle)}"</text>` : ''}
+
+  <!-- Central construct node -->
+  <g filter="url(#shadow)">
+    <rect x="${centerX - 140}" y="100" width="280" height="100" rx="12" fill="${level.color}"/>
+  </g>
+  <text x="${centerX}" y="145" text-anchor="middle" class="construct">${escapeXml(userInputs.constructName || 'Untitled Construct')}</text>
+  <rect x="${centerX - 60}" y="165" width="120" height="24" rx="12" fill="rgba(255,255,255,0.2)"/>
+  <text x="${centerX}" y="182" text-anchor="middle" class="level-badge">${escapeXml(level.name)}</text>
+
+  <!-- Connection lines to sections -->
+  <line x1="${centerX}" y1="200" x2="${centerX}" y2="240" stroke="${level.color}" stroke-width="2" stroke-dasharray="4,4"/>
+
+  <!-- Pathways visualization (if present) -->`;
+
+    if (userInputs.pathway.length > 0) {
+      const pathwayY = 260;
+      const pathwayWidth = Math.min(600, userInputs.pathway.length * 150);
+      const startX = centerX - pathwayWidth / 2;
+
+      svg += `
+  <rect x="${startX - 20}" y="${pathwayY - 15}" width="${pathwayWidth + 40}" height="40" rx="20" fill="${level.lightColor}" stroke="${level.color}" stroke-width="1"/>`;
+
+      userInputs.pathway.forEach((path, i) => {
+        const x = startX + (i * pathwayWidth / Math.max(1, userInputs.pathway.length - 1)) + (userInputs.pathway.length === 1 ? pathwayWidth/2 : 0);
+        svg += `
+  <circle cx="${x}" cy="${pathwayY + 5}" r="6" fill="${level.color}"/>
+  <text x="${x}" y="${pathwayY + 25}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">${escapeXml(path)}</text>`;
+      });
+    }
+
+    // Cross-level arrows
+    if (userInputs.crossLevelUp) {
+      svg += `
+  <g transform="translate(${centerX + 160}, 130)">
+    <path d="M0,20 L0,-10 L-8,0 L0,-10 L8,0" fill="none" stroke="${level.color}" stroke-width="2"/>
+    <text x="15" y="8" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">Upward</text>
+  </g>`;
+    }
+    if (userInputs.crossLevelDown) {
+      svg += `
+  <g transform="translate(${centerX - 160}, 130)">
+    <path d="M0,0 L0,30 L-8,20 L0,30 L8,20" fill="none" stroke="${level.color}" stroke-width="2"/>
+    <text x="-50" y="18" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">Downward</text>
+  </g>`;
+    }
+
+    // Sections panel
+    const panelY = 320;
+    const panelHeight = sections.length * sectionHeight + 40;
+
+    svg += `
+  <!-- Details panel -->
+  <rect x="60" y="${panelY}" width="${width - 120}" height="${panelHeight}" rx="12" fill="white" stroke="#e0e0e0" stroke-width="1" filter="url(#shadow)"/>`;
+
+    sections.forEach((section, i) => {
+      const y = panelY + 35 + i * sectionHeight;
+      const contentLines = wrapText(section.content, 600, 13);
+
+      svg += `
+  <text x="80" y="${y}" class="section-title">${escapeXml(section.title)}</text>`;
+
+      contentLines.forEach((line, j) => {
+        svg += `
+  <text x="80" y="${y + 18 + j * 18}" class="section-content">${escapeXml(line)}</text>`;
+      });
+
+      if (i < sections.length - 1) {
+        svg += `
+  <line x1="80" y1="${y + 50}" x2="${width - 80}" y2="${y + 50}" stroke="#eee" stroke-width="1"/>`;
+      }
+    });
+
+    // Footer
+    svg += `
+  <!-- Footer -->
+  <text x="${centerX}" y="${panelY + panelHeight + 40}" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#999">Generated by Computational Theory Canvas</text>
+
+</svg>`;
+
+    return svg;
+  };
+
+  const downloadDiagram = () => {
+    const svg = generateDiagramSVG();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${userInputs.constructName || 'translation'}-diagram.svg`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const levels = {
     individual: {
       name: 'Individual Action',
@@ -199,7 +379,7 @@ const ComputationalTheoryCanvas = () => {
             </div>
             <div style={{
               fontSize: '0.7rem',
-              color: idx === currentStep ? '#FFF' : '#666',
+              color: idx === currentStep ? '#FFF' : '#999',
               textAlign: 'center',
               whiteSpace: 'nowrap'
             }}>
@@ -1078,16 +1258,16 @@ const ComputationalTheoryCanvas = () => {
       if (!show || !content) return null;
       return (
         <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{ 
-            color: '#888', 
-            fontSize: '0.75rem', 
-            textTransform: 'uppercase', 
+          <div style={{
+            color: '#666',
+            fontSize: '0.75rem',
+            textTransform: 'uppercase',
             letterSpacing: '0.1em',
             marginBottom: '0.35rem'
           }}>
             {title}
           </div>
-          <div style={{ color: '#FFF', fontSize: '0.95rem', lineHeight: '1.5' }}>
+          <div style={{ color: '#333', fontSize: '0.95rem', lineHeight: '1.5' }}>
             {content}
           </div>
         </div>
@@ -1228,35 +1408,71 @@ const ComputationalTheoryCanvas = () => {
           />
         </div>
 
-        <div style={{ 
-          marginTop: '2rem', 
-          display: 'flex', 
-          gap: '1rem',
-          justifyContent: 'center'
+        <div style={{
+          marginTop: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem'
         }}>
-          <button
-            onClick={() => {
-              const summary = JSON.stringify(userInputs, null, 2);
-              const blob = new Blob([summary], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `${userInputs.constructName || 'translation'}-canvas.json`;
-              a.click();
-            }}
-            style={{
-              padding: '1rem 2rem',
-              background: level.color,
-              border: 'none',
-              borderRadius: '8px',
-              color: '#FFF',
-              fontSize: '1rem',
-              fontWeight: '500',
-              cursor: 'pointer'
-            }}
-          >
-            Download Translation
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button
+              onClick={downloadDiagram}
+              style={{
+                padding: '1rem 2rem',
+                background: level.color,
+                border: 'none',
+                borderRadius: '8px',
+                color: '#FFF',
+                fontSize: '1rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="M21 15l-5-5L5 21"/>
+              </svg>
+              Download Diagram
+            </button>
+            <button
+              onClick={() => {
+                const summary = JSON.stringify(userInputs, null, 2);
+                const blob = new Blob([summary], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${userInputs.constructName || 'translation'}-canvas.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{
+                padding: '1rem 2rem',
+                background: 'transparent',
+                border: `1px solid ${level.color}`,
+                borderRadius: '8px',
+                color: level.color,
+                fontSize: '1rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Download JSON
+            </button>
+          </div>
           <button
             onClick={() => {
               setCurrentStep(0);
@@ -1282,12 +1498,12 @@ const ComputationalTheoryCanvas = () => {
               });
             }}
             style={{
-              padding: '1rem 2rem',
+              padding: '0.75rem 1.5rem',
               background: 'transparent',
               border: '1px solid #444',
               borderRadius: '8px',
               color: '#888',
-              fontSize: '1rem',
+              fontSize: '0.9rem',
               cursor: 'pointer'
             }}
           >
@@ -1329,17 +1545,17 @@ const ComputationalTheoryCanvas = () => {
         alignItems: 'center'
       }}>
         <div>
-          <div style={{ 
-            fontSize: '0.7rem', 
-            color: '#666', 
-            textTransform: 'uppercase', 
+          <div style={{
+            fontSize: '0.7rem',
+            color: '#999',
+            textTransform: 'uppercase',
             letterSpacing: '0.15em',
             marginBottom: '0.25rem'
           }}>
             Entrepreneurship Research Tool
           </div>
-          <h1 style={{ 
-            margin: 0, 
+          <h1 style={{
+            margin: 0,
             fontFamily: "'Newsreader', Georgia, serif",
             fontWeight: '400',
             fontSize: '1.5rem',
@@ -1348,7 +1564,7 @@ const ComputationalTheoryCanvas = () => {
             Computational Theory Canvas
           </h1>
         </div>
-        <div style={{ fontSize: '0.85rem', color: '#666' }}>
+        <div style={{ fontSize: '0.85rem', color: '#999' }}>
           v0.1 • Based on Dimov & Pistrui (2024), Katz & Gartner (1988), Stam (2015)
         </div>
       </div>
