@@ -1374,22 +1374,14 @@ const ComputationalTheoryCanvas = () => {
       <div style={{
         padding: '1.5rem 3rem',
         borderBottom: '1px solid #E0E0E0',
-        background: '#FFF',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
+        background: '#FFF'
       }}>
-        <div>
-          <div style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '0.25rem' }}>
-            Entrepreneurship Research Tool
-          </div>
-          <h1 style={{ margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontWeight: '400', fontSize: '1.5rem', letterSpacing: '-0.01em', color: '#1a1a1a' }}>
-            Computational Theory Canvas
-          </h1>
+        <div style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '0.25rem' }}>
+          Entrepreneurship Research Tool
         </div>
-        <div style={{ fontSize: '0.85rem', color: '#888' }}>
-          v0.2 • Based on Dimov & Pistrui (2024), Katz & Gartner (1988), Stam (2015)
-        </div>
+        <h1 style={{ margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontWeight: '400', fontSize: '1.5rem', letterSpacing: '-0.01em', color: '#1a1a1a' }}>
+          Computational Theory Canvas
+        </h1>
       </div>
 
       {/* Progress Bar */}
@@ -1462,6 +1454,18 @@ const ComputationalTheoryCanvas = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        padding: '1.5rem 3rem',
+        borderTop: '1px solid #E0E0E0',
+        background: '#FFF',
+        textAlign: 'center',
+        fontSize: '0.85rem',
+        color: '#888'
+      }}>
+        v0.2 • Based on Dimov & Pistrui (2024), Katz & Gartner (1988), Stam (2015)
       </div>
     </div>
   );
