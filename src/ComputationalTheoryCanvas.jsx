@@ -7,14 +7,8 @@ const ComputationalTheoryCanvas = () => {
   const [userInputs, setUserInputs] = useState({
     paperTitle: '',
     primaryLevel: '',
-    constructName: '',
-    constructDescription: '',
-    entryPoint: '',
-    entryPointDetails: '',
-    functionalForm: '',
-    functionalFormDetails: '',
-    stocksAffected: [],
-    flowsAffected: [],
+    constructs: [{ id: 1, name: '', description: '', entryPoint: '', entryPointDetails: '', functionalForm: '', functionalFormDetails: '' }],
+    relationships: [],
     pathway: [],
     feedbackLoops: '',
     thresholdEffects: '',
@@ -28,6 +22,53 @@ const ComputationalTheoryCanvas = () => {
     setUserInputs(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleConstructChange = (id, field, value) => {
+    setUserInputs(prev => ({
+      ...prev,
+      constructs: prev.constructs.map(c => c.id === id ? { ...c, [field]: field === 'entryPoint' || field === 'functionalForm' ? value : value } : c)
+    }));
+  };
+
+  const addConstruct = () => {
+    const newId = Math.max(...userInputs.constructs.map(c => c.id), 0) + 1;
+    setUserInputs(prev => ({
+      ...prev,
+      constructs: [...prev.constructs, { id: newId, name: '', description: '', entryPoint: '', entryPointDetails: '', functionalForm: '', functionalFormDetails: '' }]
+    }));
+  };
+
+  const removeConstruct = (id) => {
+    if (userInputs.constructs.length <= 1) return;
+    setUserInputs(prev => ({
+      ...prev,
+      constructs: prev.constructs.filter(c => c.id !== id),
+      relationships: prev.relationships.filter(r => r.from !== id && r.to !== id)
+    }));
+  };
+
+  const addRelationship = () => {
+    if (userInputs.constructs.length < 2) return;
+    const newId = Math.max(...userInputs.relationships.map(r => r.id), 0) + 1;
+    setUserInputs(prev => ({
+      ...prev,
+      relationships: [...prev.relationships, { id: newId, from: prev.constructs[0].id, to: prev.constructs[1]?.id || prev.constructs[0].id, type: 'causes', description: '' }]
+    }));
+  };
+
+  const handleRelationshipChange = (id, field, value) => {
+    setUserInputs(prev => ({
+      ...prev,
+      relationships: prev.relationships.map(r => r.id === id ? { ...r, [field]: value } : r)
+    }));
+  };
+
+  const removeRelationship = (id) => {
+    setUserInputs(prev => ({
+      ...prev,
+      relationships: prev.relationships.filter(r => r.id !== id)
+    }));
+  };
+
   const handleArrayToggle = (field, value) => {
     setUserInputs(prev => ({
       ...prev,
@@ -37,192 +78,21 @@ const ComputationalTheoryCanvas = () => {
     }));
   };
 
-  const generateDiagramSVG = () => {
-    if (!selectedLevel) return '';
-    const level = levels[selectedLevel];
-    const width = 800;
-    const height = 1000;
-    const centerX = width / 2;
-    const centerY = 280;
-
-    // Helper to wrap text
-    const wrapText = (text, maxWidth, fontSize = 14) => {
-      if (!text) return [];
-      const words = text.split(' ');
-      const lines = [];
-      let currentLine = '';
-      const charsPerLine = Math.floor(maxWidth / (fontSize * 0.6));
-
-      words.forEach(word => {
-        if ((currentLine + ' ' + word).trim().length <= charsPerLine) {
-          currentLine = (currentLine + ' ' + word).trim();
-        } else {
-          if (currentLine) lines.push(currentLine);
-          currentLine = word;
-        }
-      });
-      if (currentLine) lines.push(currentLine);
-      return lines.slice(0, 4); // Max 4 lines
-    };
-
-    const escapeXml = (str) => {
-      if (!str) return '';
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    };
-
-    // Build sections for the lower part
-    const sections = [];
-    if (userInputs.constructDescription) {
-      sections.push({ title: 'Description', content: userInputs.constructDescription });
-    }
-    if (userInputs.entryPoint) {
-      sections.push({ title: 'Entry Point', content: userInputs.entryPoint + (userInputs.entryPointDetails ? ' — ' + userInputs.entryPointDetails : '') });
-    }
-    if (userInputs.functionalForm) {
-      sections.push({ title: 'Functional Form', content: userInputs.functionalForm + (userInputs.functionalFormDetails ? ' — ' + userInputs.functionalFormDetails : '') });
-    }
-    if (userInputs.pathway.length > 0) {
-      sections.push({ title: 'Causal Pathways', content: userInputs.pathway.join(', ') });
-    }
-    if (userInputs.feedbackLoops) {
-      sections.push({ title: 'Feedback Loops', content: userInputs.feedbackLoops });
-    }
-    if (userInputs.crossLevelUp) {
-      sections.push({ title: 'Upward Effects', content: userInputs.crossLevelUp });
-    }
-    if (userInputs.crossLevelDown) {
-      sections.push({ title: 'Downward Effects', content: userInputs.crossLevelDown });
-    }
-    if (userInputs.boundaryConditions) {
-      sections.push({ title: 'Boundary Conditions', content: userInputs.boundaryConditions });
-    }
-
-    // Calculate dynamic height based on sections
-    const sectionHeight = 70;
-    const calculatedHeight = Math.max(height, 450 + sections.length * sectionHeight);
-
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${calculatedHeight}" width="${width}" height="${calculatedHeight}">
-  <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap');
-      .title { font-family: Georgia, serif; font-size: 24px; fill: #1a1a1a; }
-      .subtitle { font-family: Inter, sans-serif; font-size: 14px; fill: #666; }
-      .construct { font-family: Georgia, serif; font-size: 20px; fill: white; font-weight: 500; }
-      .level-badge { font-family: Inter, sans-serif; font-size: 12px; fill: white; font-weight: 500; }
-      .section-title { font-family: Inter, sans-serif; font-size: 11px; fill: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-      .section-content { font-family: Inter, sans-serif; font-size: 13px; fill: #333; }
-      .paper-title { font-family: Inter, sans-serif; font-size: 12px; fill: #888; font-style: italic; }
-    </style>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.15"/>
-    </filter>
-  </defs>
-
-  <!-- Background -->
-  <rect width="${width}" height="${calculatedHeight}" fill="#fafafa"/>
-
-  <!-- Header -->
-  <text x="${centerX}" y="40" text-anchor="middle" class="title">Computational Translation</text>
-  ${userInputs.paperTitle ? `<text x="${centerX}" y="65" text-anchor="middle" class="paper-title">from "${escapeXml(userInputs.paperTitle)}"</text>` : ''}
-
-  <!-- Central construct node -->
-  <g filter="url(#shadow)">
-    <rect x="${centerX - 140}" y="100" width="280" height="100" rx="12" fill="${level.color}"/>
-  </g>
-  <text x="${centerX}" y="145" text-anchor="middle" class="construct">${escapeXml(userInputs.constructName || 'Untitled Construct')}</text>
-  <rect x="${centerX - 60}" y="165" width="120" height="24" rx="12" fill="rgba(255,255,255,0.2)"/>
-  <text x="${centerX}" y="182" text-anchor="middle" class="level-badge">${escapeXml(level.name)}</text>
-
-  <!-- Connection lines to sections -->
-  <line x1="${centerX}" y1="200" x2="${centerX}" y2="240" stroke="${level.color}" stroke-width="2" stroke-dasharray="4,4"/>
-
-  <!-- Pathways visualization (if present) -->`;
-
-    if (userInputs.pathway.length > 0) {
-      const pathwayY = 260;
-      const pathwayWidth = Math.min(600, userInputs.pathway.length * 150);
-      const startX = centerX - pathwayWidth / 2;
-
-      svg += `
-  <rect x="${startX - 20}" y="${pathwayY - 15}" width="${pathwayWidth + 40}" height="40" rx="20" fill="${level.lightColor}" stroke="${level.color}" stroke-width="1"/>`;
-
-      userInputs.pathway.forEach((path, i) => {
-        const x = startX + (i * pathwayWidth / Math.max(1, userInputs.pathway.length - 1)) + (userInputs.pathway.length === 1 ? pathwayWidth/2 : 0);
-        svg += `
-  <circle cx="${x}" cy="${pathwayY + 5}" r="6" fill="${level.color}"/>
-  <text x="${x}" y="${pathwayY + 25}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">${escapeXml(path)}</text>`;
-      });
-    }
-
-    // Cross-level arrows
-    if (userInputs.crossLevelUp) {
-      svg += `
-  <g transform="translate(${centerX + 160}, 130)">
-    <path d="M0,20 L0,-10 L-8,0 L0,-10 L8,0" fill="none" stroke="${level.color}" stroke-width="2"/>
-    <text x="15" y="8" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">Upward</text>
-  </g>`;
-    }
-    if (userInputs.crossLevelDown) {
-      svg += `
-  <g transform="translate(${centerX - 160}, 130)">
-    <path d="M0,0 L0,30 L-8,20 L0,30 L8,20" fill="none" stroke="${level.color}" stroke-width="2"/>
-    <text x="-50" y="18" font-family="Inter, sans-serif" font-size="10" fill="${level.color}">Downward</text>
-  </g>`;
-    }
-
-    // Sections panel
-    const panelY = 320;
-    const panelHeight = sections.length * sectionHeight + 40;
-
-    svg += `
-  <!-- Details panel -->
-  <rect x="60" y="${panelY}" width="${width - 120}" height="${panelHeight}" rx="12" fill="white" stroke="#e0e0e0" stroke-width="1" filter="url(#shadow)"/>`;
-
-    sections.forEach((section, i) => {
-      const y = panelY + 35 + i * sectionHeight;
-      const contentLines = wrapText(section.content, 600, 13);
-
-      svg += `
-  <text x="80" y="${y}" class="section-title">${escapeXml(section.title)}</text>`;
-
-      contentLines.forEach((line, j) => {
-        svg += `
-  <text x="80" y="${y + 18 + j * 18}" class="section-content">${escapeXml(line)}</text>`;
-      });
-
-      if (i < sections.length - 1) {
-        svg += `
-  <line x1="80" y1="${y + 50}" x2="${width - 80}" y2="${y + 50}" stroke="#eee" stroke-width="1"/>`;
-      }
-    });
-
-    // Footer
-    svg += `
-  <!-- Footer -->
-  <text x="${centerX}" y="${panelY + panelHeight + 40}" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#999">Generated by Computational Theory Canvas</text>
-
-</svg>`;
-
-    return svg;
-  };
-
-  const downloadDiagram = () => {
-    const svg = generateDiagramSVG();
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${userInputs.constructName || 'translation'}-diagram.svg`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const relationshipTypes = [
+    { value: 'causes', label: 'causes', description: 'A directly increases/decreases B' },
+    { value: 'moderates', label: 'moderates', description: 'A changes the strength of another relationship involving B' },
+    { value: 'mediates', label: 'mediates', description: 'A transmits the effect of another construct to B' },
+    { value: 'enables', label: 'enables', description: 'A is necessary for B to have effect' },
+    { value: 'inhibits', label: 'inhibits', description: 'A reduces or blocks B' },
+    { value: 'correlates', label: 'correlates with', description: 'A and B co-vary without clear causal direction' }
+  ];
 
   const levels = {
     individual: {
       name: 'Individual Action',
       color: '#2D5A4A',
       lightColor: '#E8F0ED',
-      accentColor: '#4A8A6A',
+      borderColor: '#B8D4C8',
       question: 'How does the entrepreneur sustain effort and make judgments?',
       foundation: 'Dimov & Pistrui (2024); Dimov (2010)',
       timeScale: 'Days to months',
@@ -252,7 +122,7 @@ const ComputationalTheoryCanvas = () => {
       name: 'Venture Emergence',
       color: '#8B4513',
       lightColor: '#F5EBE0',
-      accentColor: '#A66832',
+      borderColor: '#D4C4B0',
       question: 'How does the venture come into being as a viable entity?',
       foundation: 'Katz & Gartner (1988)',
       timeScale: 'Months to years',
@@ -282,7 +152,7 @@ const ComputationalTheoryCanvas = () => {
       name: 'Entrepreneurial Ecosystem',
       color: '#4A4A8A',
       lightColor: '#EEEEF5',
-      accentColor: '#6A6AAA',
+      borderColor: '#C8C8D8',
       question: 'How does the regional context enable productive entrepreneurship?',
       foundation: 'Stam (2015); Stam & Van de Ven (2021)',
       timeScale: 'Years to decades',
@@ -310,13 +180,20 @@ const ComputationalTheoryCanvas = () => {
     }
   };
 
+  const functionalForms = [
+    { name: 'Linear', description: 'Proportional relationship', formula: 'Y = a + bX' },
+    { name: 'Threshold', description: 'Effect kicks in after a point', formula: 'Y = 0 if X < k, else f(X)' },
+    { name: 'Multiplicative', description: 'Factors combine; all necessary', formula: 'Y = X₁ × X₂ × X₃' },
+    { name: 'Logistic/S-curve', description: 'Bounded with diminishing returns', formula: 'Y = L / (1 + e^(-k(X-x₀)))' },
+    { name: 'Moderating', description: 'Changes another relationship', formula: 'Y = b₁X + b₂XZ' },
+    { name: 'Mediating', description: 'Transmits effect through variable', formula: 'X → M → Y' }
+  ];
+
   const steps = [
     { id: 'intro', title: 'Introduction', subtitle: 'Understanding the canvas' },
     { id: 'level', title: 'Select Level', subtitle: 'Where does your theory operate?' },
     { id: 'explore', title: 'Explore Structure', subtitle: 'Stocks, flows, and dynamics' },
-    { id: 'construct', title: 'Define Construct', subtitle: 'Your theoretical contribution' },
-    { id: 'entry', title: 'Entry Point', subtitle: 'Where does it plug in?' },
-    { id: 'form', title: 'Functional Form', subtitle: 'How does the relationship work?' },
+    { id: 'construct', title: 'Define Constructs', subtitle: 'Your theoretical contributions' },
     { id: 'pathways', title: 'Pathways & Feedback', subtitle: 'Causal structure' },
     { id: 'linkages', title: 'Cross-Level Effects', subtitle: 'Connections across levels' },
     { id: 'summary', title: 'Translation Summary', subtitle: 'Your computational specification' }
@@ -327,9 +204,7 @@ const ComputationalTheoryCanvas = () => {
       case 'intro': return true;
       case 'level': return selectedLevel !== null;
       case 'explore': return true;
-      case 'construct': return userInputs.constructName.trim() !== '';
-      case 'entry': return userInputs.entryPoint !== '';
-      case 'form': return userInputs.functionalForm !== '';
+      case 'construct': return userInputs.constructs.some(c => c.name.trim() !== '');
       case 'pathways': return userInputs.pathway.length > 0;
       case 'linkages': return true;
       case 'summary': return true;
@@ -343,8 +218,8 @@ const ComputationalTheoryCanvas = () => {
       alignItems: 'center',
       gap: '0.25rem',
       padding: '1.5rem 3rem',
-      borderBottom: '1px solid #2D2D2D',
-      background: '#0A0A0A',
+      borderBottom: '1px solid #E0E0E0',
+      background: '#FAFAFA',
       overflowX: 'auto'
     }}>
       {steps.map((step, idx) => (
@@ -356,7 +231,7 @@ const ComputationalTheoryCanvas = () => {
               flexDirection: 'column',
               alignItems: 'center',
               cursor: idx <= currentStep ? 'pointer' : 'default',
-              opacity: idx <= currentStep ? 1 : 0.4,
+              opacity: idx <= currentStep ? 1 : 0.5,
               minWidth: '80px'
             }}
           >
@@ -364,9 +239,9 @@ const ComputationalTheoryCanvas = () => {
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: idx < currentStep ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') : 
-                         idx === currentStep ? '#FFF' : '#2D2D2D',
-              color: idx === currentStep ? '#0D0D0D' : '#FFF',
+              background: idx < currentStep ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') :
+                         idx === currentStep ? (selectedLevel ? levels[selectedLevel].color : '#333') : '#E0E0E0',
+              color: idx <= currentStep ? '#FFF' : '#999',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -379,9 +254,10 @@ const ComputationalTheoryCanvas = () => {
             </div>
             <div style={{
               fontSize: '0.7rem',
-              color: idx === currentStep ? '#FFF' : '#999',
+              color: idx === currentStep ? '#333' : '#888',
               textAlign: 'center',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              fontWeight: idx === currentStep ? '500' : '400'
             }}>
               {step.title}
             </div>
@@ -390,7 +266,7 @@ const ComputationalTheoryCanvas = () => {
             <div style={{
               flex: '1',
               height: '2px',
-              background: idx < currentStep ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') : '#2D2D2D',
+              background: idx < currentStep ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') : '#E0E0E0',
               minWidth: '20px',
               marginBottom: '1.5rem',
               transition: 'all 0.3s ease'
@@ -403,30 +279,31 @@ const ComputationalTheoryCanvas = () => {
 
   const renderIntro = () => (
     <div style={{ maxWidth: '800px' }}>
-      <h2 style={{ 
-        fontFamily: "'Newsreader', Georgia, serif", 
-        fontWeight: '400', 
+      <h2 style={{
+        fontFamily: "'Newsreader', Georgia, serif",
+        fontWeight: '400',
         fontSize: '1.75rem',
         marginBottom: '1.5rem',
-        color: '#FFF'
+        color: '#1a1a1a'
       }}>
         Welcome to the Computational Theory Canvas
       </h2>
-      
-      <p style={{ color: '#AAA', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-        This tool helps you translate your theoretical contribution into computational form. 
-        By specifying where your constructs plug in, how relationships work, and what feedback 
+
+      <p style={{ color: '#555', fontSize: '1.05rem', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+        This tool helps you translate your theoretical contribution into computational form.
+        By specifying where your constructs plug in, how relationships work, and what feedback
         loops operate, you create a blueprint for simulation and systematic exploration.
       </p>
 
       <div style={{
-        background: '#1A1A1A',
+        background: '#FFF',
         borderRadius: '12px',
         padding: '1.5rem',
         marginBottom: '2rem',
-        border: '1px solid #2D2D2D'
+        border: '1px solid #E0E0E0',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
-        <h3 style={{ color: '#FFF', fontSize: '1rem', marginBottom: '1rem', fontWeight: '500' }}>
+        <h3 style={{ color: '#333', fontSize: '1rem', marginBottom: '1rem', fontWeight: '500' }}>
           The canvas operates at three interconnected levels:
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -444,7 +321,7 @@ const ComputationalTheoryCanvas = () => {
                 <div style={{ color: level.color, fontWeight: '500', marginBottom: '0.25rem' }}>
                   {level.name}
                 </div>
-                <div style={{ color: '#888', fontSize: '0.9rem' }}>
+                <div style={{ color: '#666', fontSize: '0.9rem' }}>
                   {level.question}
                 </div>
               </div>
@@ -454,18 +331,18 @@ const ComputationalTheoryCanvas = () => {
       </div>
 
       <div style={{
-        background: 'linear-gradient(135deg, #1A2A1A 0%, #1A1A2A 100%)',
+        background: 'linear-gradient(135deg, #F0F7F4 0%, #F4F4FA 100%)',
         borderRadius: '12px',
         padding: '1.5rem',
-        border: '1px solid #2D4A2D'
+        border: '1px solid #D0E0D8'
       }}>
-        <h3 style={{ color: '#8A8', fontSize: '1rem', marginBottom: '0.75rem', fontWeight: '500' }}>
+        <h3 style={{ color: '#2D5A4A', fontSize: '1rem', marginBottom: '0.75rem', fontWeight: '500' }}>
           What you'll specify:
         </h3>
-        <ul style={{ color: '#AAA', margin: 0, paddingLeft: '1.25rem', lineHeight: '1.8' }}>
+        <ul style={{ color: '#555', margin: 0, paddingLeft: '1.25rem', lineHeight: '1.8' }}>
           <li>Which level your theory primarily addresses</li>
-          <li>Your core theoretical construct</li>
-          <li>Where it plugs into the existing architecture</li>
+          <li>Your theoretical constructs and their relationships</li>
+          <li>Where they plug into the existing architecture</li>
           <li>The functional form of relationships</li>
           <li>Pathway structure and feedback loops</li>
           <li>Cross-level effects</li>
@@ -476,17 +353,17 @@ const ComputationalTheoryCanvas = () => {
 
   const renderLevelSelection = () => (
     <div style={{ maxWidth: '900px' }}>
-      <h2 style={{ 
-        fontFamily: "'Newsreader', Georgia, serif", 
-        fontWeight: '400', 
+      <h2 style={{
+        fontFamily: "'Newsreader', Georgia, serif",
+        fontWeight: '400',
         fontSize: '1.75rem',
         marginBottom: '0.75rem',
-        color: '#FFF'
+        color: '#1a1a1a'
       }}>
         Which level does your theory primarily address?
       </h2>
-      <p style={{ color: '#888', marginBottom: '2rem' }}>
-        Select the level where your main theoretical contribution operates. 
+      <p style={{ color: '#666', marginBottom: '2rem' }}>
+        Select the level where your main theoretical contribution operates.
         You'll specify cross-level effects later.
       </p>
 
@@ -496,46 +373,43 @@ const ComputationalTheoryCanvas = () => {
             key={key}
             onClick={() => { setSelectedLevel(key); handleInputChange('primaryLevel', key); }}
             style={{
-              background: selectedLevel === key ? level.lightColor : '#1A1A1A',
+              background: selectedLevel === key ? level.lightColor : '#FFF',
               borderRadius: '12px',
               padding: '1.5rem',
-              border: `2px solid ${selectedLevel === key ? level.color : '#2D2D2D'}`,
+              border: `2px solid ${selectedLevel === key ? level.color : '#E0E0E0'}`,
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              boxShadow: selectedLevel === key ? `0 2px 8px ${level.color}20` : '0 1px 3px rgba(0,0,0,0.05)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h3 style={{ 
-                  color: selectedLevel === key ? level.color : '#FFF', 
+                <h3 style={{
+                  color: selectedLevel === key ? level.color : '#333',
                   margin: '0 0 0.5rem 0',
                   fontSize: '1.2rem',
                   fontWeight: '500'
                 }}>
                   {level.name}
                 </h3>
-                <p style={{ 
-                  color: selectedLevel === key ? '#555' : '#888', 
+                <p style={{
+                  color: '#666',
                   margin: '0 0 0.75rem 0',
                   fontSize: '1rem',
                   fontStyle: 'italic'
                 }}>
                   {level.question}
                 </p>
-                <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem' }}>
-                  <span style={{ color: selectedLevel === key ? '#666' : '#666' }}>
-                    <strong>Time scale:</strong> {level.timeScale}
-                  </span>
-                  <span style={{ color: selectedLevel === key ? '#666' : '#666' }}>
-                    <strong>Foundation:</strong> {level.foundation}
-                  </span>
+                <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: '#888' }}>
+                  <span><strong>Time scale:</strong> {level.timeScale}</span>
+                  <span><strong>Foundation:</strong> {level.foundation}</span>
                 </div>
               </div>
               <div style={{
                 width: '24px',
                 height: '24px',
                 borderRadius: '50%',
-                border: `2px solid ${selectedLevel === key ? level.color : '#444'}`,
+                border: `2px solid ${selectedLevel === key ? level.color : '#CCC'}`,
                 background: selectedLevel === key ? level.color : 'transparent',
                 display: 'flex',
                 alignItems: 'center',
@@ -558,17 +432,17 @@ const ComputationalTheoryCanvas = () => {
 
     return (
       <div style={{ maxWidth: '900px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
+        <h2 style={{
+          fontFamily: "'Newsreader', Georgia, serif",
+          fontWeight: '400',
           fontSize: '1.75rem',
           marginBottom: '0.75rem',
-          color: '#FFF'
+          color: '#1a1a1a'
         }}>
           Explore the {level.name} Structure
         </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          Familiarize yourself with the stocks, flows, and dynamics at this level. 
+        <p style={{ color: '#666', marginBottom: '2rem' }}>
+          Familiarize yourself with the stocks, flows, and dynamics at this level.
           Click elements to expand details.
         </p>
 
@@ -582,40 +456,36 @@ const ComputationalTheoryCanvas = () => {
                 key={cat.category}
                 onClick={() => setExpandedElement(expandedElement === cat.category ? null : cat.category)}
                 style={{
-                  background: expandedElement === cat.category ? level.lightColor : '#1A1A1A',
+                  background: expandedElement === cat.category ? level.lightColor : '#FFF',
                   borderRadius: '8px',
                   padding: '1rem 1.25rem',
-                  border: `1px solid ${expandedElement === cat.category ? level.color : '#2D2D2D'}`,
+                  border: `1px solid ${expandedElement === cat.category ? level.color : '#E0E0E0'}`,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <span style={{ 
-                      color: expandedElement === cat.category ? level.color : '#FFF', 
-                      fontWeight: '500' 
+                    <span style={{
+                      color: expandedElement === cat.category ? level.color : '#333',
+                      fontWeight: '500'
                     }}>
                       {cat.category}
                     </span>
-                    <span style={{ 
-                      color: expandedElement === cat.category ? '#666' : '#666', 
-                      marginLeft: '0.75rem',
-                      fontSize: '0.9rem'
-                    }}>
+                    <span style={{ color: '#888', marginLeft: '0.75rem', fontSize: '0.9rem' }}>
                       — {cat.description}
                     </span>
                   </div>
-                  <span style={{ color: '#666' }}>{expandedElement === cat.category ? '−' : '+'}</span>
+                  <span style={{ color: '#888' }}>{expandedElement === cat.category ? '−' : '+'}</span>
                 </div>
                 {expandedElement === cat.category && (
-                  <div style={{ 
-                    display: 'flex', 
-                    flexWrap: 'wrap', 
-                    gap: '0.5rem', 
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '0.5rem',
                     marginTop: '1rem',
                     paddingTop: '1rem',
-                    borderTop: `1px solid ${level.color}30`
+                    borderTop: `1px solid ${level.borderColor}`
                   }}>
                     {cat.items.map(item => (
                       <span key={item} style={{
@@ -623,7 +493,8 @@ const ComputationalTheoryCanvas = () => {
                         color: level.color,
                         padding: '0.35rem 0.75rem',
                         borderRadius: '4px',
-                        fontSize: '0.85rem'
+                        fontSize: '0.85rem',
+                        border: `1px solid ${level.borderColor}`
                       }}>
                         {item}
                       </span>
@@ -639,23 +510,23 @@ const ComputationalTheoryCanvas = () => {
           <h3 style={{ color: level.color, fontSize: '1.1rem', marginBottom: '1rem', fontWeight: '500' }}>
             Key Flows
           </h3>
-          <div style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
             gap: '0.5rem',
-            background: '#1A1A1A',
+            background: '#FFF',
             padding: '1.25rem',
             borderRadius: '8px',
-            border: '1px solid #2D2D2D'
+            border: '1px solid #E0E0E0'
           }}>
             {level.flows.map(flow => (
               <span key={flow} style={{
-                background: '#0D0D0D',
-                color: '#AAA',
+                background: '#F8F8F8',
+                color: '#555',
                 padding: '0.5rem 1rem',
                 borderRadius: '20px',
                 fontSize: '0.85rem',
-                border: '1px solid #2D2D2D'
+                border: '1px solid #E8E8E8'
               }}>
                 {flow}
               </span>
@@ -671,316 +542,367 @@ const ComputationalTheoryCanvas = () => {
     const level = levels[selectedLevel];
 
     return (
-      <div style={{ maxWidth: '700px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
+      <div style={{ maxWidth: '900px' }}>
+        <h2 style={{
+          fontFamily: "'Newsreader', Georgia, serif",
+          fontWeight: '400',
           fontSize: '1.75rem',
           marginBottom: '0.75rem',
-          color: '#FFF'
+          color: '#1a1a1a'
         }}>
-          Define Your Theoretical Construct
+          Define Your Theoretical Constructs
         </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          What is the core construct your theory introduces or elaborates?
+        <p style={{ color: '#666', marginBottom: '2rem' }}>
+          Add the constructs your theory introduces. You can specify multiple constructs and define relationships between them.
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <label style={{ 
-              display: 'block', 
-              color: '#888', 
-              fontSize: '0.8rem', 
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              Paper or Theory Title
-            </label>
-            <input
-              type="text"
-              value={userInputs.paperTitle}
-              onChange={(e) => handleInputChange('paperTitle', e.target.value)}
-              placeholder="e.g., Nascent Entrepreneurs and Venture Emergence"
-              style={{
-                width: '100%',
-                padding: '1rem',
-                background: '#1A1A1A',
-                border: `1px solid #2D2D2D`,
-                borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{ 
-              display: 'block', 
-              color: '#888', 
-              fontSize: '0.8rem', 
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              Core Construct Name <span style={{ color: level.color }}>*</span>
-            </label>
-            <input
-              type="text"
-              value={userInputs.constructName}
-              onChange={(e) => handleInputChange('constructName', e.target.value)}
-              placeholder="e.g., Opportunity Confidence"
-              style={{
-                width: '100%',
-                padding: '1rem',
-                background: '#1A1A1A',
-                border: `1px solid ${userInputs.constructName ? level.color : '#2D2D2D'}`,
-                borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '1rem'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{ 
-              display: 'block', 
-              color: '#888', 
-              fontSize: '0.8rem', 
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              Description
-            </label>
-            <textarea
-              value={userInputs.constructDescription}
-              onChange={(e) => handleInputChange('constructDescription', e.target.value)}
-              placeholder="What does this construct capture? How is it defined?"
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '1rem',
-                background: '#1A1A1A',
-                border: '1px solid #2D2D2D',
-                borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '0.95rem',
-                resize: 'vertical',
-                lineHeight: '1.5'
-              }}
-            />
-          </div>
+        {/* Paper Title */}
+        <div style={{ marginBottom: '2rem' }}>
+          <label style={{
+            display: 'block',
+            color: '#666',
+            fontSize: '0.8rem',
+            marginBottom: '0.5rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+          }}>
+            Paper or Theory Title
+          </label>
+          <input
+            type="text"
+            value={userInputs.paperTitle}
+            onChange={(e) => handleInputChange('paperTitle', e.target.value)}
+            placeholder="e.g., Nascent Entrepreneurs and Venture Emergence"
+            style={{
+              width: '100%',
+              padding: '1rem',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
+              borderRadius: '8px',
+              color: '#333',
+              fontSize: '1rem'
+            }}
+          />
         </div>
-      </div>
-    );
-  };
 
-  const renderEntryPoint = () => {
-    if (!selectedLevel) return null;
-    const level = levels[selectedLevel];
-
-    return (
-      <div style={{ maxWidth: '800px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
-          fontSize: '1.75rem',
-          marginBottom: '0.75rem',
-          color: '#FFF'
-        }}>
-          Where does "{userInputs.constructName || 'your construct'}" plug in?
-        </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          Select the entry point that best describes how your construct connects to the existing architecture.
-        </p>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-          {level.entryPoints.map(ep => (
-            <div
-              key={ep.name}
-              onClick={() => handleInputChange('entryPoint', ep.name)}
+        {/* Constructs */}
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ color: level.color, fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>
+              Constructs <span style={{ color: level.color }}>*</span>
+            </h3>
+            <button
+              onClick={addConstruct}
               style={{
-                background: userInputs.entryPoint === ep.name ? level.lightColor : '#1A1A1A',
-                borderRadius: '8px',
-                padding: '1.25rem',
-                border: `2px solid ${userInputs.entryPoint === ep.name ? level.color : '#2D2D2D'}`,
+                padding: '0.5rem 1rem',
+                background: level.lightColor,
+                border: `1px solid ${level.color}`,
+                borderRadius: '6px',
+                color: level.color,
+                fontSize: '0.85rem',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                fontWeight: '500'
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ 
-                    color: userInputs.entryPoint === ep.name ? level.color : '#FFF', 
-                    fontWeight: '500',
-                    marginBottom: '0.35rem'
-                  }}>
-                    {ep.name}
+              + Add Construct
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {userInputs.constructs.map((construct, idx) => (
+              <div
+                key={construct.id}
+                style={{
+                  background: '#FFF',
+                  borderRadius: '12px',
+                  padding: '1.5rem',
+                  border: `1px solid ${construct.name ? level.borderColor : '#E0E0E0'}`,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <span style={{ color: level.color, fontWeight: '500', fontSize: '0.9rem' }}>
+                    Construct {idx + 1}
+                  </span>
+                  {userInputs.constructs.length > 1 && (
+                    <button
+                      onClick={() => removeConstruct(construct.id)}
+                      style={{
+                        padding: '0.25rem 0.5rem',
+                        background: 'transparent',
+                        border: '1px solid #DDD',
+                        borderRadius: '4px',
+                        color: '#999',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', color: '#666', fontSize: '0.75rem', marginBottom: '0.35rem', textTransform: 'uppercase' }}>
+                      Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={construct.name}
+                      onChange={(e) => handleConstructChange(construct.id, 'name', e.target.value)}
+                      placeholder="e.g., Opportunity Confidence"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        background: '#FAFAFA',
+                        border: `1px solid ${construct.name ? level.borderColor : '#E0E0E0'}`,
+                        borderRadius: '6px',
+                        color: '#333',
+                        fontSize: '0.95rem'
+                      }}
+                    />
                   </div>
-                  <div style={{ 
-                    color: userInputs.entryPoint === ep.name ? '#555' : '#888',
-                    fontSize: '0.9rem',
-                    marginBottom: '0.25rem'
-                  }}>
-                    {ep.description}
-                  </div>
-                  <div style={{ 
-                    color: userInputs.entryPoint === ep.name ? '#777' : '#555',
-                    fontSize: '0.85rem',
-                    fontStyle: 'italic'
-                  }}>
-                    {ep.example}
+                  <div>
+                    <label style={{ display: 'block', color: '#666', fontSize: '0.75rem', marginBottom: '0.35rem', textTransform: 'uppercase' }}>
+                      Entry Point
+                    </label>
+                    <select
+                      value={construct.entryPoint}
+                      onChange={(e) => handleConstructChange(construct.id, 'entryPoint', e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        background: '#FAFAFA',
+                        border: '1px solid #E0E0E0',
+                        borderRadius: '6px',
+                        color: '#333',
+                        fontSize: '0.95rem'
+                      }}
+                    >
+                      <option value="">Select entry point...</option>
+                      {level.entryPoints.map(ep => (
+                        <option key={ep.name} value={ep.name}>{ep.name}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-                <div style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  border: `2px solid ${userInputs.entryPoint === ep.name ? level.color : '#444'}`,
-                  background: userInputs.entryPoint === ep.name ? level.color : 'transparent',
-                  flexShrink: 0
-                }} />
-              </div>
-            </div>
-          ))}
-        </div>
 
-        {userInputs.entryPoint && (
-          <div>
-            <label style={{ 
-              display: 'block', 
-              color: '#888', 
-              fontSize: '0.8rem', 
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              Specify how it connects (optional)
-            </label>
-            <textarea
-              value={userInputs.entryPointDetails}
-              onChange={(e) => handleInputChange('entryPointDetails', e.target.value)}
-              placeholder={`Describe specifically how "${userInputs.constructName}" connects as a ${userInputs.entryPoint.toLowerCase()}...`}
-              rows={3}
-              style={{
-                width: '100%',
-                padding: '1rem',
-                background: '#1A1A1A',
-                border: '1px solid #2D2D2D',
-                borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '0.95rem',
-                resize: 'vertical'
-              }}
-            />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label style={{ display: 'block', color: '#666', fontSize: '0.75rem', marginBottom: '0.35rem', textTransform: 'uppercase' }}>
+                      Functional Form
+                    </label>
+                    <select
+                      value={construct.functionalForm}
+                      onChange={(e) => handleConstructChange(construct.id, 'functionalForm', e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        background: '#FAFAFA',
+                        border: '1px solid #E0E0E0',
+                        borderRadius: '6px',
+                        color: '#333',
+                        fontSize: '0.95rem'
+                      }}
+                    >
+                      <option value="">Select form...</option>
+                      {functionalForms.map(f => (
+                        <option key={f.name} value={f.name}>{f.name} — {f.formula}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', color: '#666', fontSize: '0.75rem', marginBottom: '0.35rem', textTransform: 'uppercase' }}>
+                      Form Details
+                    </label>
+                    <input
+                      type="text"
+                      value={construct.functionalFormDetails}
+                      onChange={(e) => handleConstructChange(construct.id, 'functionalFormDetails', e.target.value)}
+                      placeholder="Specific parameters or notes..."
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        background: '#FAFAFA',
+                        border: '1px solid #E0E0E0',
+                        borderRadius: '6px',
+                        color: '#333',
+                        fontSize: '0.95rem'
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', color: '#666', fontSize: '0.75rem', marginBottom: '0.35rem', textTransform: 'uppercase' }}>
+                    Description
+                  </label>
+                  <textarea
+                    value={construct.description}
+                    onChange={(e) => handleConstructChange(construct.id, 'description', e.target.value)}
+                    placeholder="What does this construct capture? How is it defined?"
+                    rows={2}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      background: '#FAFAFA',
+                      border: '1px solid #E0E0E0',
+                      borderRadius: '6px',
+                      color: '#333',
+                      fontSize: '0.9rem',
+                      resize: 'vertical'
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-    );
-  };
-
-  const renderFunctionalForm = () => {
-    if (!selectedLevel) return null;
-    const level = levels[selectedLevel];
-
-    const forms = [
-      { name: 'Linear', description: 'Proportional relationship: more X → proportionally more Y', formula: 'Y = a + bX' },
-      { name: 'Threshold', description: 'Effect only kicks in after/before a certain point', formula: 'Y = 0 if X < k, else f(X)' },
-      { name: 'Multiplicative', description: 'Factors combine by multiplication; all necessary', formula: 'Y = X₁ × X₂ × X₃' },
-      { name: 'Logistic/S-curve', description: 'Bounded effect with diminishing returns', formula: 'Y = L / (1 + e^(-k(X-x₀)))' },
-      { name: 'Moderating', description: 'Changes the strength of another relationship', formula: 'Y = b₁X + b₂XZ' },
-      { name: 'Mediating', description: 'Transmits effect from X to Y through intervening variable', formula: 'X → M → Y' }
-    ];
-
-    return (
-      <div style={{ maxWidth: '800px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
-          fontSize: '1.75rem',
-          marginBottom: '0.75rem',
-          color: '#FFF'
-        }}>
-          How does the relationship work?
-        </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          What functional form best captures how "{userInputs.constructName || 'your construct'}" 
-          affects the system?
-        </p>
-
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '0.75rem',
-          marginBottom: '2rem'
-        }}>
-          {forms.map(form => (
-            <div
-              key={form.name}
-              onClick={() => handleInputChange('functionalForm', form.name)}
-              style={{
-                background: userInputs.functionalForm === form.name ? level.lightColor : '#1A1A1A',
-                borderRadius: '8px',
-                padding: '1rem',
-                border: `2px solid ${userInputs.functionalForm === form.name ? level.color : '#2D2D2D'}`,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <div style={{ 
-                color: userInputs.functionalForm === form.name ? level.color : '#FFF', 
-                fontWeight: '500',
-                marginBottom: '0.35rem'
-              }}>
-                {form.name}
-              </div>
-              <div style={{ 
-                color: userInputs.functionalForm === form.name ? '#555' : '#888',
-                fontSize: '0.85rem',
-                marginBottom: '0.5rem'
-              }}>
-                {form.description}
-              </div>
-              <code style={{
-                color: userInputs.functionalForm === form.name ? level.color : '#666',
-                fontSize: '0.8rem',
-                fontFamily: 'monospace'
-              }}>
-                {form.formula}
-              </code>
-            </div>
-          ))}
         </div>
 
-        {userInputs.functionalForm && (
+        {/* Relationships */}
+        {userInputs.constructs.filter(c => c.name).length >= 2 && (
           <div>
-            <label style={{ 
-              display: 'block', 
-              color: '#888', 
-              fontSize: '0.8rem', 
-              marginBottom: '0.5rem',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              Describe the specific relationship (optional)
-            </label>
-            <textarea
-              value={userInputs.functionalFormDetails}
-              onChange={(e) => handleInputChange('functionalFormDetails', e.target.value)}
-              placeholder={`How specifically does the ${userInputs.functionalForm.toLowerCase()} relationship work for "${userInputs.constructName}"?`}
-              rows={3}
-              style={{
-                width: '100%',
-                padding: '1rem',
-                background: '#1A1A1A',
-                border: '1px solid #2D2D2D',
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ color: level.color, fontSize: '1.1rem', fontWeight: '500', margin: 0 }}>
+                Relationships Between Constructs
+              </h3>
+              <button
+                onClick={addRelationship}
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: level.lightColor,
+                  border: `1px solid ${level.color}`,
+                  borderRadius: '6px',
+                  color: level.color,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  fontWeight: '500'
+                }}
+              >
+                + Add Relationship
+              </button>
+            </div>
+
+            {userInputs.relationships.length === 0 ? (
+              <div style={{
+                background: '#FAFAFA',
                 borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '0.95rem',
-                resize: 'vertical'
-              }}
-            />
+                padding: '1.5rem',
+                textAlign: 'center',
+                color: '#888',
+                fontSize: '0.9rem',
+                border: '1px dashed #DDD'
+              }}>
+                Click "Add Relationship" to specify how your constructs relate to each other
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {userInputs.relationships.map(rel => {
+                  const namedConstructs = userInputs.constructs.filter(c => c.name);
+                  return (
+                    <div
+                      key={rel.id}
+                      style={{
+                        background: '#FFF',
+                        borderRadius: '8px',
+                        padding: '1rem',
+                        border: '1px solid #E0E0E0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        flexWrap: 'wrap'
+                      }}
+                    >
+                      <select
+                        value={rel.from}
+                        onChange={(e) => handleRelationshipChange(rel.id, 'from', parseInt(e.target.value))}
+                        style={{
+                          padding: '0.5rem',
+                          background: level.lightColor,
+                          border: `1px solid ${level.borderColor}`,
+                          borderRadius: '4px',
+                          color: level.color,
+                          fontSize: '0.9rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        {namedConstructs.map(c => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+
+                      <select
+                        value={rel.type}
+                        onChange={(e) => handleRelationshipChange(rel.id, 'type', e.target.value)}
+                        style={{
+                          padding: '0.5rem',
+                          background: '#FFF',
+                          border: '1px solid #DDD',
+                          borderRadius: '4px',
+                          color: '#555',
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        {relationshipTypes.map(t => (
+                          <option key={t.value} value={t.value}>{t.label}</option>
+                        ))}
+                      </select>
+
+                      <select
+                        value={rel.to}
+                        onChange={(e) => handleRelationshipChange(rel.id, 'to', parseInt(e.target.value))}
+                        style={{
+                          padding: '0.5rem',
+                          background: level.lightColor,
+                          border: `1px solid ${level.borderColor}`,
+                          borderRadius: '4px',
+                          color: level.color,
+                          fontSize: '0.9rem',
+                          fontWeight: '500'
+                        }}
+                      >
+                        {namedConstructs.map(c => (
+                          <option key={c.id} value={c.id}>{c.name}</option>
+                        ))}
+                      </select>
+
+                      <input
+                        type="text"
+                        value={rel.description}
+                        onChange={(e) => handleRelationshipChange(rel.id, 'description', e.target.value)}
+                        placeholder="Details (optional)..."
+                        style={{
+                          flex: 1,
+                          minWidth: '150px',
+                          padding: '0.5rem',
+                          background: '#FAFAFA',
+                          border: '1px solid #E0E0E0',
+                          borderRadius: '4px',
+                          color: '#333',
+                          fontSize: '0.9rem'
+                        }}
+                      />
+
+                      <button
+                        onClick={() => removeRelationship(rel.id)}
+                        style={{
+                          padding: '0.25rem 0.5rem',
+                          background: 'transparent',
+                          border: '1px solid #DDD',
+                          borderRadius: '4px',
+                          color: '#999',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -990,20 +912,21 @@ const ComputationalTheoryCanvas = () => {
   const renderPathways = () => {
     if (!selectedLevel) return null;
     const level = levels[selectedLevel];
+    const constructNames = userInputs.constructs.filter(c => c.name).map(c => c.name).join(', ') || 'your constructs';
 
     return (
       <div style={{ maxWidth: '800px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
+        <h2 style={{
+          fontFamily: "'Newsreader', Georgia, serif",
+          fontWeight: '400',
           fontSize: '1.75rem',
           marginBottom: '0.75rem',
-          color: '#FFF'
+          color: '#1a1a1a'
         }}>
           Pathway Structure & Feedback
         </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          Through which pathways does "{userInputs.constructName || 'your construct'}" affect outcomes? 
+        <p style={{ color: '#666', marginBottom: '2rem' }}>
+          Through which pathways do {constructNames} affect outcomes?
           Select all that apply.
         </p>
 
@@ -1017,10 +940,10 @@ const ComputationalTheoryCanvas = () => {
                 key={path.name}
                 onClick={() => handleArrayToggle('pathway', path.name)}
                 style={{
-                  background: userInputs.pathway.includes(path.name) ? level.lightColor : '#1A1A1A',
+                  background: userInputs.pathway.includes(path.name) ? level.lightColor : '#FFF',
                   borderRadius: '8px',
                   padding: '1rem 1.25rem',
-                  border: `1px solid ${userInputs.pathway.includes(path.name) ? level.color : '#2D2D2D'}`,
+                  border: `1px solid ${userInputs.pathway.includes(path.name) ? level.color : '#E0E0E0'}`,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -1032,7 +955,7 @@ const ComputationalTheoryCanvas = () => {
                   width: '20px',
                   height: '20px',
                   borderRadius: '4px',
-                  border: `2px solid ${userInputs.pathway.includes(path.name) ? level.color : '#444'}`,
+                  border: `2px solid ${userInputs.pathway.includes(path.name) ? level.color : '#CCC'}`,
                   background: userInputs.pathway.includes(path.name) ? level.color : 'transparent',
                   display: 'flex',
                   alignItems: 'center',
@@ -1044,10 +967,10 @@ const ComputationalTheoryCanvas = () => {
                   {userInputs.pathway.includes(path.name) && '✓'}
                 </div>
                 <div>
-                  <span style={{ color: userInputs.pathway.includes(path.name) ? level.color : '#FFF', fontWeight: '500' }}>
+                  <span style={{ color: userInputs.pathway.includes(path.name) ? level.color : '#333', fontWeight: '500' }}>
                     {path.name}
                   </span>
-                  <span style={{ color: userInputs.pathway.includes(path.name) ? '#555' : '#888', marginLeft: '0.75rem', fontSize: '0.9rem' }}>
+                  <span style={{ color: '#666', marginLeft: '0.75rem', fontSize: '0.9rem' }}>
                     — {path.description}
                   </span>
                 </div>
@@ -1057,28 +980,21 @@ const ComputationalTheoryCanvas = () => {
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ 
-            display: 'block', 
-            color: '#888', 
-            fontSize: '0.8rem', 
-            marginBottom: '0.5rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
+          <label style={{ display: 'block', color: '#666', fontSize: '0.8rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Feedback Loop Implications
           </label>
           <textarea
             value={userInputs.feedbackLoops}
             onChange={(e) => handleInputChange('feedbackLoops', e.target.value)}
-            placeholder="Does your construct create, close, or interrupt any feedback loops? Describe the reinforcing or balancing dynamics..."
+            placeholder="Do your constructs create, close, or interrupt any feedback loops? Describe the reinforcing or balancing dynamics..."
             rows={3}
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#1A1A1A',
-              border: '1px solid #2D2D2D',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
@@ -1086,14 +1002,7 @@ const ComputationalTheoryCanvas = () => {
         </div>
 
         <div>
-          <label style={{ 
-            display: 'block', 
-            color: '#888', 
-            fontSize: '0.8rem', 
-            marginBottom: '0.5rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
+          <label style={{ display: 'block', color: '#666', fontSize: '0.8rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Threshold Effects
           </label>
           <textarea
@@ -1104,10 +1013,10 @@ const ComputationalTheoryCanvas = () => {
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#1A1A1A',
-              border: '1px solid #2D2D2D',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
@@ -1120,69 +1029,63 @@ const ComputationalTheoryCanvas = () => {
   const renderLinkages = () => {
     if (!selectedLevel) return null;
     const level = levels[selectedLevel];
+    const constructNames = userInputs.constructs.filter(c => c.name).map(c => c.name).join(', ') || 'your constructs';
 
     return (
       <div style={{ maxWidth: '800px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
+        <h2 style={{
+          fontFamily: "'Newsreader', Georgia, serif",
+          fontWeight: '400',
           fontSize: '1.75rem',
           marginBottom: '0.75rem',
-          color: '#FFF'
+          color: '#1a1a1a'
         }}>
           Cross-Level Effects
         </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
-          Does "{userInputs.constructName || 'your construct'}" have effects that span levels?
+        <p style={{ color: '#666', marginBottom: '2rem' }}>
+          Do {constructNames} have effects that span levels?
         </p>
 
         <div style={{
-          background: '#1A1A1A',
+          background: '#FFF',
           borderRadius: '12px',
           padding: '1.5rem',
           marginBottom: '2rem',
-          border: '1px solid #2D2D2D'
+          border: '1px solid #E0E0E0'
         }}>
-          <h4 style={{ color: '#FFF', marginBottom: '1rem', fontSize: '0.95rem' }}>
+          <h4 style={{ color: '#333', marginBottom: '1rem', fontSize: '0.95rem' }}>
             Reference: Linkages from {level.name}
           </h4>
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ color: '#888', fontSize: '0.8rem', marginBottom: '0.5rem' }}>↑ Upward to next level:</div>
-            <div style={{ color: '#AAA', fontSize: '0.9rem', paddingLeft: '1rem' }}>
+            <div style={{ color: '#555', fontSize: '0.9rem', paddingLeft: '1rem' }}>
               {level.linkagesUp.map((l, i) => <div key={i}>• {l}</div>)}
             </div>
           </div>
           <div>
             <div style={{ color: '#888', fontSize: '0.8rem', marginBottom: '0.5rem' }}>↓ Receives from lower level:</div>
-            <div style={{ color: '#AAA', fontSize: '0.9rem', paddingLeft: '1rem' }}>
+            <div style={{ color: '#555', fontSize: '0.9rem', paddingLeft: '1rem' }}>
               {level.linkagesDown.map((l, i) => <div key={i}>• {l}</div>)}
             </div>
           </div>
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ 
-            display: 'block', 
-            color: '#888', 
-            fontSize: '0.8rem', 
-            marginBottom: '0.5rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            Upward Effects (how your construct feeds into higher levels)
+          <label style={{ display: 'block', color: '#666', fontSize: '0.8rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Upward Effects (how your constructs feed into higher levels)
           </label>
           <textarea
             value={userInputs.crossLevelUp}
             onChange={(e) => handleInputChange('crossLevelUp', e.target.value)}
-            placeholder={`How does "${userInputs.constructName}" affect the level above? What does it contribute?`}
+            placeholder="How do your constructs affect the level above? What do they contribute?"
             rows={3}
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#1A1A1A',
-              border: '1px solid #2D2D2D',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
@@ -1190,28 +1093,21 @@ const ComputationalTheoryCanvas = () => {
         </div>
 
         <div style={{ marginBottom: '1.5rem' }}>
-          <label style={{ 
-            display: 'block', 
-            color: '#888', 
-            fontSize: '0.8rem', 
-            marginBottom: '0.5rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            Downward Effects (how your construct receives from or affects lower levels)
+          <label style={{ display: 'block', color: '#666', fontSize: '0.8rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Downward Effects (how your constructs receive from or affect lower levels)
           </label>
           <textarea
             value={userInputs.crossLevelDown}
             onChange={(e) => handleInputChange('crossLevelDown', e.target.value)}
-            placeholder={`How does "${userInputs.constructName}" connect to the level below? What shapes it or what does it shape?`}
+            placeholder="How do your constructs connect to the level below? What shapes them or what do they shape?"
             rows={3}
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#1A1A1A',
-              border: '1px solid #2D2D2D',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
@@ -1219,14 +1115,7 @@ const ComputationalTheoryCanvas = () => {
         </div>
 
         <div>
-          <label style={{ 
-            display: 'block', 
-            color: '#888', 
-            fontSize: '0.8rem', 
-            marginBottom: '0.5rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
+          <label style={{ display: 'block', color: '#666', fontSize: '0.8rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Boundary Conditions
           </label>
           <textarea
@@ -1237,10 +1126,10 @@ const ComputationalTheoryCanvas = () => {
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#1A1A1A',
-              border: '1px solid #2D2D2D',
+              background: '#FFF',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
@@ -1253,18 +1142,13 @@ const ComputationalTheoryCanvas = () => {
   const renderSummary = () => {
     if (!selectedLevel) return null;
     const level = levels[selectedLevel];
+    const namedConstructs = userInputs.constructs.filter(c => c.name);
 
     const SummarySection = ({ title, content, show = true }) => {
       if (!show || !content) return null;
       return (
         <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{
-            color: '#666',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            marginBottom: '0.35rem'
-          }}>
+          <div style={{ color: '#888', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.35rem' }}>
             {title}
           </div>
           <div style={{ color: '#333', fontSize: '0.95rem', lineHeight: '1.5' }}>
@@ -1276,16 +1160,16 @@ const ComputationalTheoryCanvas = () => {
 
     return (
       <div style={{ maxWidth: '900px' }}>
-        <h2 style={{ 
-          fontFamily: "'Newsreader', Georgia, serif", 
-          fontWeight: '400', 
+        <h2 style={{
+          fontFamily: "'Newsreader', Georgia, serif",
+          fontWeight: '400',
           fontSize: '1.75rem',
           marginBottom: '0.75rem',
-          color: '#FFF'
+          color: '#1a1a1a'
         }}>
           Translation Summary
         </h2>
-        <p style={{ color: '#888', marginBottom: '2rem' }}>
+        <p style={{ color: '#666', marginBottom: '2rem' }}>
           Your theoretical contribution translated into computational form.
         </p>
 
@@ -1296,37 +1180,22 @@ const ComputationalTheoryCanvas = () => {
           border: `2px solid ${level.color}`,
           marginBottom: '2rem'
         }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'flex-start',
             marginBottom: '1.5rem',
             paddingBottom: '1.5rem',
-            borderBottom: `1px solid ${level.color}30`
+            borderBottom: `1px solid ${level.borderColor}`
           }}>
             <div>
-              <div style={{ 
-                color: level.color, 
-                fontSize: '0.8rem', 
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                marginBottom: '0.5rem'
-              }}>
+              <div style={{ color: level.color, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
                 Computational Translation
               </div>
-              <h3 style={{ 
-                color: '#2D2D2D', 
-                margin: 0,
-                fontFamily: "'Newsreader', Georgia, serif",
-                fontSize: '1.5rem',
-                fontWeight: '500'
-              }}>
-                {userInputs.constructName || 'Untitled Construct'}
-              </h3>
               {userInputs.paperTitle && (
-                <div style={{ color: '#666', marginTop: '0.35rem', fontStyle: 'italic' }}>
-                  from "{userInputs.paperTitle}"
-                </div>
+                <h3 style={{ color: '#333', margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontSize: '1.5rem', fontWeight: '500' }}>
+                  {userInputs.paperTitle}
+                </h3>
               )}
             </div>
             <div style={{
@@ -1341,53 +1210,66 @@ const ComputationalTheoryCanvas = () => {
             </div>
           </div>
 
-          <div style={{ color: '#2D2D2D' }}>
-            <SummarySection 
-              title="Description" 
-              content={userInputs.constructDescription} 
-            />
-            <SummarySection 
-              title="Entry Point" 
-              content={userInputs.entryPoint + (userInputs.entryPointDetails ? ` — ${userInputs.entryPointDetails}` : '')} 
-            />
-            <SummarySection 
-              title="Functional Form" 
-              content={userInputs.functionalForm + (userInputs.functionalFormDetails ? ` — ${userInputs.functionalFormDetails}` : '')} 
-            />
-            <SummarySection 
-              title="Causal Pathways" 
-              content={userInputs.pathway.length > 0 ? userInputs.pathway.join(', ') : null} 
-            />
-            <SummarySection 
-              title="Feedback Loop Implications" 
-              content={userInputs.feedbackLoops} 
-            />
-            <SummarySection 
-              title="Threshold Effects" 
-              content={userInputs.thresholdEffects} 
-            />
-            <SummarySection 
-              title="Upward Cross-Level Effects" 
-              content={userInputs.crossLevelUp} 
-            />
-            <SummarySection 
-              title="Downward Cross-Level Effects" 
-              content={userInputs.crossLevelDown} 
-            />
-            <SummarySection 
-              title="Boundary Conditions" 
-              content={userInputs.boundaryConditions} 
-            />
+          {/* Constructs */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ color: '#888', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.75rem' }}>
+              Constructs ({namedConstructs.length})
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {namedConstructs.map(c => (
+                <div key={c.id} style={{
+                  background: '#FFF',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  border: `1px solid ${level.borderColor}`
+                }}>
+                  <div style={{ fontWeight: '500', color: level.color, marginBottom: '0.25rem' }}>{c.name}</div>
+                  {c.description && <div style={{ color: '#555', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{c.description}</div>}
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', fontSize: '0.85rem', color: '#666' }}>
+                    {c.entryPoint && <span><strong>Entry:</strong> {c.entryPoint}</span>}
+                    {c.functionalForm && <span><strong>Form:</strong> {c.functionalForm}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* Relationships */}
+          {userInputs.relationships.length > 0 && (
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ color: '#888', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+                Relationships
+              </div>
+              <div style={{ color: '#333', fontSize: '0.95rem' }}>
+                {userInputs.relationships.map(r => {
+                  const fromName = userInputs.constructs.find(c => c.id === r.from)?.name || '?';
+                  const toName = userInputs.constructs.find(c => c.id === r.to)?.name || '?';
+                  return (
+                    <div key={r.id} style={{ marginBottom: '0.35rem' }}>
+                      <strong>{fromName}</strong> {r.type} <strong>{toName}</strong>
+                      {r.description && <span style={{ color: '#666' }}> — {r.description}</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <SummarySection title="Causal Pathways" content={userInputs.pathway.length > 0 ? userInputs.pathway.join(', ') : null} />
+          <SummarySection title="Feedback Loop Implications" content={userInputs.feedbackLoops} />
+          <SummarySection title="Threshold Effects" content={userInputs.thresholdEffects} />
+          <SummarySection title="Upward Cross-Level Effects" content={userInputs.crossLevelUp} />
+          <SummarySection title="Downward Cross-Level Effects" content={userInputs.crossLevelDown} />
+          <SummarySection title="Boundary Conditions" content={userInputs.boundaryConditions} />
         </div>
 
         <div style={{
-          background: '#1A1A1A',
+          background: '#FFF',
           borderRadius: '12px',
           padding: '1.5rem',
-          border: '1px solid #2D2D2D'
+          border: '1px solid #E0E0E0'
         }}>
-          <h4 style={{ color: '#FFF', marginBottom: '1rem', fontSize: '1rem' }}>
+          <h4 style={{ color: '#333', marginBottom: '1rem', fontSize: '1rem' }}>
             Simulation Notes (optional)
           </h4>
           <textarea
@@ -1398,81 +1280,41 @@ const ComputationalTheoryCanvas = () => {
             style={{
               width: '100%',
               padding: '1rem',
-              background: '#0D0D0D',
-              border: '1px solid #2D2D2D',
+              background: '#FAFAFA',
+              border: '1px solid #E0E0E0',
               borderRadius: '8px',
-              color: '#FFF',
+              color: '#333',
               fontSize: '0.95rem',
               resize: 'vertical'
             }}
           />
         </div>
 
-        <div style={{
-          marginTop: '2rem',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button
-              onClick={downloadDiagram}
-              style={{
-                padding: '1rem 2rem',
-                background: level.color,
-                border: 'none',
-                borderRadius: '8px',
-                color: '#FFF',
-                fontSize: '1rem',
-                fontWeight: '500',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <path d="M21 15l-5-5L5 21"/>
-              </svg>
-              Download Diagram
-            </button>
-            <button
-              onClick={() => {
-                const summary = JSON.stringify(userInputs, null, 2);
-                const blob = new Blob([summary], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${userInputs.constructName || 'translation'}-canvas.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-              }}
-              style={{
-                padding: '1rem 2rem',
-                background: 'transparent',
-                border: `1px solid ${level.color}`,
-                borderRadius: '8px',
-                color: level.color,
-                fontSize: '1rem',
-                fontWeight: '500',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-              Download JSON
-            </button>
-          </div>
+        <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <button
+            onClick={() => {
+              const summary = JSON.stringify(userInputs, null, 2);
+              const blob = new Blob([summary], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `${userInputs.paperTitle || 'translation'}-canvas.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            style={{
+              padding: '1rem 2rem',
+              background: level.color,
+              border: 'none',
+              borderRadius: '8px',
+              color: '#FFF',
+              fontSize: '1rem',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Download Translation (JSON)
+          </button>
           <button
             onClick={() => {
               setCurrentStep(0);
@@ -1480,14 +1322,8 @@ const ComputationalTheoryCanvas = () => {
               setUserInputs({
                 paperTitle: '',
                 primaryLevel: '',
-                constructName: '',
-                constructDescription: '',
-                entryPoint: '',
-                entryPointDetails: '',
-                functionalForm: '',
-                functionalFormDetails: '',
-                stocksAffected: [],
-                flowsAffected: [],
+                constructs: [{ id: 1, name: '', description: '', entryPoint: '', entryPointDetails: '', functionalForm: '', functionalFormDetails: '' }],
+                relationships: [],
                 pathway: [],
                 feedbackLoops: '',
                 thresholdEffects: '',
@@ -1500,7 +1336,7 @@ const ComputationalTheoryCanvas = () => {
             style={{
               padding: '0.75rem 1.5rem',
               background: 'transparent',
-              border: '1px solid #444',
+              border: '1px solid #DDD',
               borderRadius: '8px',
               color: '#888',
               fontSize: '0.9rem',
@@ -1520,8 +1356,6 @@ const ComputationalTheoryCanvas = () => {
       case 'level': return renderLevelSelection();
       case 'explore': return renderExplore();
       case 'construct': return renderConstruct();
-      case 'entry': return renderEntryPoint();
-      case 'form': return renderFunctionalForm();
       case 'pathways': return renderPathways();
       case 'linkages': return renderLinkages();
       case 'summary': return renderSummary();
@@ -1532,40 +1366,29 @@ const ComputationalTheoryCanvas = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#0D0D0D',
-      color: '#FFF',
+      background: '#F5F5F5',
+      color: '#333',
       fontFamily: "'Söhne', 'Helvetica Neue', sans-serif"
     }}>
       {/* Header */}
       <div style={{
         padding: '1.5rem 3rem',
-        borderBottom: '1px solid #2D2D2D',
+        borderBottom: '1px solid #E0E0E0',
+        background: '#FFF',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
         <div>
-          <div style={{
-            fontSize: '0.7rem',
-            color: '#999',
-            textTransform: 'uppercase',
-            letterSpacing: '0.15em',
-            marginBottom: '0.25rem'
-          }}>
+          <div style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '0.25rem' }}>
             Entrepreneurship Research Tool
           </div>
-          <h1 style={{
-            margin: 0,
-            fontFamily: "'Newsreader', Georgia, serif",
-            fontWeight: '400',
-            fontSize: '1.5rem',
-            letterSpacing: '-0.01em'
-          }}>
+          <h1 style={{ margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontWeight: '400', fontSize: '1.5rem', letterSpacing: '-0.01em', color: '#1a1a1a' }}>
             Computational Theory Canvas
           </h1>
         </div>
-        <div style={{ fontSize: '0.85rem', color: '#999' }}>
-          v0.1 • Based on Dimov & Pistrui (2024), Katz & Gartner (1988), Stam (2015)
+        <div style={{ fontSize: '0.85rem', color: '#888' }}>
+          v0.2 • Based on Dimov & Pistrui (2024), Katz & Gartner (1988), Stam (2015)
         </div>
       </div>
 
@@ -1577,8 +1400,8 @@ const ComputationalTheoryCanvas = () => {
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           {/* Step Title */}
           <div style={{ marginBottom: '2rem' }}>
-            <div style={{ 
-              color: selectedLevel ? levels[selectedLevel].color : '#666', 
+            <div style={{
+              color: selectedLevel ? levels[selectedLevel].color : '#888',
               fontSize: '0.8rem',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
@@ -1592,54 +1415,48 @@ const ComputationalTheoryCanvas = () => {
           {renderCurrentStep()}
 
           {/* Navigation */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             marginTop: '3rem',
             paddingTop: '2rem',
-            borderTop: '1px solid #2D2D2D'
+            borderTop: '1px solid #E0E0E0'
           }}>
             <button
               onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
               disabled={currentStep === 0}
               style={{
                 padding: '0.75rem 1.5rem',
-                background: 'transparent',
-                border: '1px solid #444',
+                background: '#FFF',
+                border: '1px solid #DDD',
                 borderRadius: '6px',
-                color: currentStep === 0 ? '#444' : '#AAA',
+                color: currentStep === 0 ? '#CCC' : '#555',
                 fontSize: '0.95rem',
-                cursor: currentStep === 0 ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
+                cursor: currentStep === 0 ? 'not-allowed' : 'pointer'
               }}
             >
               ← Previous
             </button>
-            
+
             {currentStep < steps.length - 1 ? (
               <button
                 onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                 disabled={!canProceed()}
                 style={{
                   padding: '0.75rem 1.5rem',
-                  background: canProceed() ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') : '#2D2D2D',
+                  background: canProceed() ? (selectedLevel ? levels[selectedLevel].color : '#4A8A6A') : '#E0E0E0',
                   border: 'none',
                   borderRadius: '6px',
-                  color: canProceed() ? '#FFF' : '#666',
+                  color: canProceed() ? '#FFF' : '#999',
                   fontSize: '0.95rem',
                   cursor: canProceed() ? 'pointer' : 'not-allowed',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
                   fontWeight: '500'
                 }}
               >
                 Continue →
               </button>
             ) : (
-              <div style={{ color: '#666', fontSize: '0.9rem' }}>
+              <div style={{ color: '#888', fontSize: '0.9rem' }}>
                 Translation complete
               </div>
             )}
