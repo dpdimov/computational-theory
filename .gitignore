@@ -1,25 +1,23 @@
 # Dependencies
-node_modules
+node_modules/
+packages/*/node_modules/
 
-# Build output
-dist
-build
+# Build output (within package directories - root build outputs are kept for deployment)
+packages/*/dist/
 
-# Local env files
-.env
-.env.local
-.env.*.local
-
-# Editor directories and files
-.vscode
-.idea
+# IDE
+.idea/
+.vscode/
 *.swp
 *.swo
-*~
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
+
+# Environment
+.env
+.env.local
 
 # Logs
 *.log

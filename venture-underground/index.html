@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venture Emergence</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 18px;
+        }
+
+        :root {
+            --bg-deep: #0d1117;
+            --bg-surface: #161b22;
+            --bg-elevated: #21262d;
+            --bg-overlay: #30363d;
+            --border-default: #30363d;
+            --border-muted: #21262d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-red: #f85149;
+            --accent-orange: #d29922;
+            --accent-purple: #a371f7;
+            --accent-cyan: #39c5cf;
+            --accent-pink: #db61a2;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .app {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-default);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-mark {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 5px;
+        }
+        
+        .logo-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .logo-text span {
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .layer-toggles {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .layer-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-default);
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            min-width: 50px;
+        }
+        
+        .layer-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+        
+        .layer-btn:hover:not(.active) {
+            border-color: var(--text-muted);
+        }
+        
+        .layer-btn .layer-id {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .layer-btn .layer-name {
+            font-size: 0.6rem;
+            margin-top: 1px;
+            opacity: 0.9;
+        }
+        
+        .sim-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .btn {
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid var(--border-default);
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn:hover { background: var(--bg-overlay); }
+        
+        .btn-primary {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+        
+        .btn-primary:hover { background: #34a446; }
+        
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 300px;
+            gap: 1px;
+            background: var(--border-muted);
+            overflow: hidden;
+        }
+
+        /* Left Panel */
+        .controls-panel {
+            background: var(--bg-surface);
+            padding: 14px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+
+        .control-section {
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .control-row {
+            margin-bottom: 12px;
+        }
+        
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        
+        .control-name {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .control-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            background: var(--bg-elevated);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--bg-elevated);
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+        }
+        
+        .layer-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            padding: 10px;
+            background: var(--bg-elevated);
+            border-radius: 5px;
+        }
+        
+        .layer-info p {
+            margin-bottom: 3px;
+        }
+        
+        .layer-info p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .layer-info strong {
+            color: var(--accent-cyan);
+        }
+        
+        /* Center Panel */
+        .viz-panel {
+            background: var(--bg-deep);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .viz-header {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+        }
+        
+        .viz-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .period-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .period-info {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .period-info strong {
+            color: var(--accent-cyan);
+        }
+        
+        .progress-bar {
+            width: 60px;
+            height: 3px;
+            background: var(--bg-elevated);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-cyan);
+            transition: width 0.2s ease;
+        }
+        
+        /* Trajectory Chart */
+        .trajectory-container {
+            flex: 1;
+            padding: 10px;
+            position: relative;
+            min-height: 200px;
+        }
+        
+        .trajectory-chart {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .threshold-label {
+            position: absolute;
+            right: 4px;
+            font-size: 0.7rem;
+            font-family: 'IBM Plex Mono', monospace;
+            padding: 2px 6px;
+            border-radius: 2px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .threshold-emerge {
+            color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.2);
+        }
+        
+        .threshold-exit {
+            color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.2);
+        }
+        
+        .chart-legend {
+            position: absolute;
+            bottom: 4px;
+            left: 35px;
+            display: flex;
+            gap: 10px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .legend-line {
+            width: 12px;
+            height: 2px;
+            border-radius: 1px;
+        }
+        
+        .legend-line.pursuing { background: var(--text-secondary); }
+        .legend-line.emerged { background: var(--accent-green); }
+        .legend-line.exited { background: var(--accent-red); }
+        
+        .legend-marker {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+        
+        .legend-marker.reframe { background: var(--accent-orange); }
+        
+        /* Right Panel */
+        .entrepreneurs-panel {
+            background: var(--bg-surface);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-default);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-header span {
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        .panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        /* Radial Grid */
+        .entrepreneur-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-start;
+        }
+        
+        .entrepreneur-radial {
+            width: 42px;
+            height: 42px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        
+        .entrepreneur-radial:hover {
+            transform: scale(1.1);
+        }
+        
+        .entrepreneur-radial.selected {
+            transform: scale(1.15);
+        }
+        
+        .entrepreneur-radial.selected::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+        }
+        
+        .radial-bg { fill: var(--bg-elevated); }
+        .radial-track { fill: none; stroke: var(--bg-deep); stroke-width: 3; }
+        .radial-progress { fill: none; stroke-width: 3; stroke-linecap: round; }
+        .radial-anomaly { fill: none; stroke-width: 2; stroke-linecap: round; opacity: 0.6; }
+        .radial-center { fill: var(--bg-elevated); }
+        .radial-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            fill: var(--text-secondary);
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .entrepreneur-radial.emerged .radial-label { fill: var(--accent-green); }
+        .entrepreneur-radial.exited .radial-label { fill: var(--accent-red); }
+        .entrepreneur-radial.stalled .radial-label { fill: var(--accent-orange); }
+        
+        .badge-indicator {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            min-width: 14px;
+            height: 14px;
+            background: var(--accent-orange);
+            border-radius: 7px;
+            border: 1.5px solid var(--bg-surface);
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            padding: 0 2px;
+        }
+        
+        .badge-indicator.exp {
+            background: var(--accent-purple);
+            top: auto;
+            bottom: -2px;
+        }
+        
+        .badge-indicator.social {
+            background: var(--accent-pink);
+            right: auto;
+            left: -2px;
+        }
+        
+        /* Inspector */
+        .inspector {
+            display: none;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .inspector.visible { display: block; }
+        
+        .inspector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border-default);
+        }
+        
+        .inspector-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inspector-status {
+            font-size: 0.7rem;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        
+        .inspector-status.pursuing { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+        .inspector-status.emerged { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .inspector-status.exited { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+        .inspector-status.stalled { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px 5px;
+            border-radius: 3px;
+            line-height: 1;
+        }
+        
+        .close-btn:hover { background: var(--bg-overlay); color: var(--text-primary); }
+        
+        .inspector-row { margin-bottom: 8px; }
+        .inspector-row:last-child { margin-bottom: 0; }
+        
+        .inspector-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        
+        .metric-box {
+            background: var(--bg-deep);
+            border-radius: 4px;
+            padding: 6px;
+        }
+        
+        .metric-box-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .metric-box-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .metric-bar-bg {
+            height: 4px;
+            background: var(--bg-overlay);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+        
+        .metric-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+        
+        .metric-bar-fill.confidence { background: var(--accent-cyan); }
+        .metric-bar-fill.anomaly { background: var(--accent-orange); }
+        .metric-bar-fill.exp-ent { background: var(--accent-purple); }
+        .metric-bar-fill.exp-ind { background: var(--accent-pink); }
+        
+        /* Dimension Ring */
+        .dim-ring-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+        
+        .dim-ring { width: 100px; height: 100px; }
+        
+        .frame-dims {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+        
+        .dim-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 6px;
+            background: var(--bg-deep);
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+        
+        .dim-badge.new {
+            background: rgba(210, 153, 34, 0.2);
+            border: 1px solid var(--accent-orange);
+        }
+        
+        .dim-color {
+            width: 5px;
+            height: 5px;
+            border-radius: 2px;
+        }
+        
+        .dim-weight {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-muted);
+        }
+        
+        /* History sections */
+        .history-section {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            max-height: 50px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 2px 0;
+            border-bottom: 1px solid var(--border-muted);
+        }
+        
+        .history-item:last-child { border-bottom: none; }
+        
+        .history-item .period { color: var(--accent-orange); font-family: 'IBM Plex Mono', monospace; }
+        
+        /* Feedback */
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-height: 50px;
+            overflow-y: auto;
+        }
+        
+        .feedback-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 5px;
+            background: var(--bg-deep);
+            border-radius: 2px;
+            font-size: 0.7rem;
+        }
+        
+        .feedback-period {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-muted);
+            min-width: 18px;
+        }
+        
+        .feedback-bar {
+            flex: 1;
+            height: 2px;
+            background: var(--bg-overlay);
+            border-radius: 1px;
+            position: relative;
+        }
+        
+        .feedback-bar-mid {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border-default);
+        }
+        
+        .feedback-fill {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            border-radius: 1px;
+        }
+        
+        .feedback-fill.pos { left: 50%; background: var(--accent-green); }
+        .feedback-fill.neg { right: 50%; background: var(--accent-red); }
+        
+        .feedback-val {
+            font-family: 'IBM Plex Mono', monospace;
+            min-width: 28px;
+            text-align: right;
+        }
+        
+        .feedback-val.pos { color: var(--accent-green); }
+        .feedback-val.neg { color: var(--accent-red); }
+        
+        /* Stakeholder Info */
+        .stakeholder-info {
+            background: var(--bg-elevated);
+            border-radius: 5px;
+            padding: 8px;
+            margin-top: 8px;
+        }
+        
+        .stakeholder-title {
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .hidden-badge {
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stakeholder-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .concern-dims {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
+        
+        /* Footer */
+        .outcome-footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-default);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .outcome-matrix {
+            display: grid;
+            grid-template-columns: auto repeat(2, 70px);
+            gap: 1px;
+            background: var(--border-muted);
+            border-radius: 5px;
+            overflow: hidden;
+            font-size: 0.75rem;
+        }
+
+        .matrix-cell {
+            background: var(--bg-elevated);
+            padding: 8px 10px;
+            text-align: center;
+        }
+
+        .matrix-header {
+            background: var(--bg-surface);
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            color: var(--text-muted);
+            padding: 5px 8px;
+        }
+
+        .matrix-row-label {
+            background: var(--bg-surface);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 5px 10px;
+        }
+
+        .matrix-count {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .matrix-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+        
+        .cell-t1s .matrix-count { color: var(--accent-green); }
+        .cell-t1e .matrix-count { color: var(--accent-red); }
+        .cell-t2e .matrix-count { color: var(--accent-orange); }
+        .cell-t2s .matrix-count { color: var(--accent-cyan); }
+        
+        .outcome-stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: var(--bg-elevated);
+            border-radius: 5px;
+            padding: 8px 14px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        
+        .stat-value.primary { color: var(--accent-cyan); }
+        .stat-value.secondary { color: var(--text-secondary); }
+        .stat-value.highlight { color: var(--accent-orange); }
+        .stat-value.social { color: var(--accent-pink); }
+        
+        .outcome-explanation {
+            flex: 1;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 280px;
+            min-width: 180px;
+        }
+        
+        .outcome-explanation strong { color: var(--text-secondary); }
+        
+        /* About section */
+        .about-bar {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-default);
+            padding: 0;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .about-bar.open {
+            max-height: 300px;
+            padding: 12px 16px;
+        }
+
+        .about-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.15s;
+        }
+
+        .about-toggle:hover {
+            color: var(--text-secondary);
+        }
+
+        .about-content {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 900px;
+        }
+
+        .about-content p {
+            margin-bottom: 6px;
+        }
+
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-content strong {
+            color: var(--text-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-overlay); border-radius: 2px; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 260px 1fr;
+                grid-template-rows: 1fr auto;
+            }
+            .entrepreneurs-panel {
+                grid-column: 1 / -1;
+                max-height: 300px;
+            }
+            .outcome-matrix {
+                grid-template-columns: auto repeat(2, 60px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 20px;
+            }
+            header {
+                padding: 10px 12px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .layer-toggles {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .layer-btn {
+                min-width: 38px;
+                padding: 4px 5px;
+            }
+            .main-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            .controls-panel {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+            .control-section {
+                margin-bottom: 0;
+            }
+            .viz-panel {
+                min-height: 300px;
+            }
+            .trajectory-container {
+                min-height: 250px;
+            }
+            .entrepreneurs-panel {
+                max-height: 320px;
+            }
+            .outcome-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px;
+            }
+            .outcome-matrix {
+                width: 100%;
+                grid-template-columns: auto 1fr 1fr;
+            }
+            .outcome-stats {
+                justify-content: space-between;
+            }
+            .stat-card {
+                flex: 1;
+                min-width: 60px;
+            }
+            .outcome-explanation {
+                max-width: none;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text span {
+                display: none;
+            }
+            .layer-btn {
+                min-width: 36px;
+                padding: 4px 5px;
+            }
+            .layer-btn .layer-name {
+                display: none;
+            }
+            .layer-btn .layer-id {
+                font-size: 0.8rem;
+            }
+            .controls-panel {
+                grid-template-columns: 1fr;
+                max-height: 200px;
+                font-size: 0.85rem;
+            }
+            .section-title {
+                font-size: 0.75rem;
+            }
+            .control-name {
+                font-size: 0.85rem;
+            }
+            .control-value {
+                font-size: 0.8rem;
+            }
+            input[type="range"] {
+                height: 6px;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                width: 18px;
+                height: 18px;
+            }
+            .entrepreneur-radial {
+                width: 52px;
+                height: 52px;
+            }
+            .inspector {
+                font-size: 0.8rem;
+            }
+            .outcome-stats {
+                flex-wrap: wrap;
+            }
+            .stat-card {
+                min-width: 60px;
+                padding: 6px 10px;
+            }
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            .stat-value {
+                font-size: 0.95rem;
+            }
+            .matrix-count {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="logo">
+                <div class="logo-mark"></div>
+                <div class="logo-text">Venture Emergence</div>
+            </div>
+            <div class="header-controls">
+                <div class="layer-toggles">
+                    <button class="layer-btn active" data-layer="0"><span class="layer-id">L0</span><span class="layer-name">Engage</span></button>
+                    <button class="layer-btn active" data-layer="1"><span class="layer-id">L1</span><span class="layer-name">Frame</span></button>
+                    <button class="layer-btn active" data-layer="2"><span class="layer-id">L2</span><span class="layer-name">Confid.</span></button>
+                    <button class="layer-btn active" data-layer="3"><span class="layer-id">L3</span><span class="layer-name">Reframe</span></button>
+                    <button class="layer-btn active" data-layer="4"><span class="layer-id">L4</span><span class="layer-name">Exper.</span></button>
+                    <button class="layer-btn active" data-layer="5"><span class="layer-id">L5</span><span class="layer-name">Social</span></button>
+                    <button class="layer-btn active" data-layer="6"><span class="layer-id">L6</span><span class="layer-name">Disclose</span></button>
+                </div>
+                <div class="sim-buttons">
+                    <button class="about-toggle" id="aboutToggle">About</button>
+                    <button class="btn" id="resetBtn">Reset</button>
+                    <button class="btn" id="stepBtn">Step</button>
+                    <button class="btn btn-primary" id="playBtn">▶ Run</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="about-bar" id="aboutBar">
+            <div class="about-content">
+                <p><strong>Venture Emergence</strong> simulates how entrepreneurs navigate uncertainty through framing, confidence updating, and social interaction. Each entrepreneur holds a limited <strong>frame</strong> — a subset of dimensions they attend to — and receives feedback based on how well their frame aligns with hidden stakeholder concerns.</p>
+                <p>The simulation builds up through 7 layers: <strong>L0</strong> raw engagement, <strong>L1</strong> frame-filtered perception, <strong>L2</strong> confidence dynamics with effort drain, <strong>L3</strong> anomaly-driven reframing, <strong>L4</strong> experience effects, <strong>L5</strong> social network influence, and <strong>L6</strong> world-disclosing feedback where successful emergence reshapes what stakeholders value. Toggle layers on/off to isolate their effects.</p>
+            </div>
+        </div>
+        
+        <div class="main-layout">
+            <aside class="controls-panel">
+                <div class="control-section">
+                    <div class="section-title">Layers</div>
+                    <div class="layer-info">
+                        <p><strong>L0:</strong> Engage, raw feedback</p>
+                        <p><strong>L1:</strong> Frame filters perception</p>
+                        <p><strong>L2:</strong> Effort drain + feedback → confidence</p>
+                        <p><strong>L3:</strong> Anomaly → reframe</p>
+                        <p><strong>L4:</strong> Experience modifies rates</p>
+                        <p><strong>L5:</strong> Social influence on confidence/reframe</p>
+                        <p><strong>L6:</strong> Success shifts stakeholder concerns</p>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">Population</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Entrepreneurs</span><span class="control-value" id="numEntrepreneursVal">12</span></div>
+                        <input type="range" id="numEntrepreneurs" min="4" max="24" value="12">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Frame Capacity (K)</span><span class="control-value" id="frameSizeVal">5</span></div>
+                        <input type="range" id="frameSize" min="2" max="8" value="5">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">World</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Concern Concentration</span><span class="control-value" id="concernConcVal">0.5</span></div>
+                        <input type="range" id="concernConc" min="0.3" max="0.8" step="0.1" value="0.5">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">Confidence (L2)</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Learning Rate</span><span class="control-value" id="learningRateVal">0.12</span></div>
+                        <input type="range" id="learningRate" min="0.04" max="0.25" step="0.01" value="0.12">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Effort Drain</span><span class="control-value" id="effortDrainVal">0.02</span></div>
+                        <input type="range" id="effortDrain" min="0" max="0.05" step="0.005" value="0.02">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Exit Threshold</span><span class="control-value" id="exitThreshVal">0.20</span></div>
+                        <input type="range" id="exitThresh" min="0.1" max="0.4" step="0.05" value="0.20">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Emerge Threshold</span><span class="control-value" id="emergeThreshVal">0.85</span></div>
+                        <input type="range" id="emergeThresh" min="0.7" max="0.95" step="0.05" value="0.85">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">Reframing (L3)</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Anomaly Rate</span><span class="control-value" id="anomalyRateVal">0.15</span></div>
+                        <input type="range" id="anomalyRate" min="0.05" max="0.3" step="0.01" value="0.15">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Reframe Threshold</span><span class="control-value" id="reframeThreshVal">1.2</span></div>
+                        <input type="range" id="reframeThresh" min="0.5" max="2.5" step="0.1" value="1.2">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Reframe Cost</span><span class="control-value" id="reframeCostVal">0.15</span></div>
+                        <input type="range" id="reframeCost" min="0" max="0.3" step="0.05" value="0.15">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">Social (L5)</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Network Density</span><span class="control-value" id="networkDensityVal">3</span></div>
+                        <input type="range" id="networkDensity" min="0" max="6" value="3">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Social Influence</span><span class="control-value" id="socialInfluenceVal">0.10</span></div>
+                        <input type="range" id="socialInfluence" min="0" max="0.3" step="0.02" value="0.10">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">World Disclosing (L6)</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Disclosure Strength</span><span class="control-value" id="disclosureStrengthVal">0.10</span></div>
+                        <input type="range" id="disclosureStrength" min="0" max="0.3" step="0.02" value="0.10">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <div class="section-title">Simulation</div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Max Periods</span><span class="control-value" id="maxPeriodsVal">50</span></div>
+                        <input type="range" id="maxPeriods" min="20" max="100" step="10" value="50">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Noise</span><span class="control-value" id="noiseVal">0.15</span></div>
+                        <input type="range" id="noise" min="0" max="0.4" step="0.05" value="0.15">
+                    </div>
+                    <div class="control-row">
+                        <div class="control-label"><span class="control-name">Speed</span><span class="control-value" id="speedVal">Normal</span></div>
+                        <input type="range" id="speed" min="100" max="1000" step="100" value="400">
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="viz-panel">
+                <div class="viz-header">
+                    <div class="viz-title">Confidence Trajectories</div>
+                    <div class="period-badge">
+                        <span class="period-info">Period <strong id="currentPeriod">0</strong>/<span id="maxPeriodDisplay">50</span></span>
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                    </div>
+                </div>
+                
+                <div class="trajectory-container">
+                    <div class="trajectory-chart">
+                        <canvas id="chartCanvas" class="chart-canvas"></canvas>
+                        <div class="threshold-label threshold-emerge" id="emergeLabel">0.85</div>
+                        <div class="threshold-label threshold-exit" id="exitLabel">0.20</div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><div class="legend-line pursuing"></div><span>Active</span></div>
+                        <div class="legend-item"><div class="legend-line emerged"></div><span>Emerged</span></div>
+                        <div class="legend-item"><div class="legend-line exited"></div><span>Exited</span></div>
+                        <div class="legend-item"><div class="legend-marker reframe"></div><span>Reframe</span></div>
+                    </div>
+                </div>
+            </main>
+            
+            <aside class="entrepreneurs-panel">
+                <div class="panel-header">Entrepreneurs <span>(click to inspect)</span></div>
+                <div class="panel-body">
+                    <div class="inspector" id="inspector">
+                        <div class="inspector-header">
+                            <div class="inspector-title">
+                                <span id="inspectorName">E1</span>
+                                <span class="inspector-status" id="inspectorStatus">Pursuing</span>
+                            </div>
+                            <button class="close-btn" id="closeInspector">×</button>
+                        </div>
+                        
+                        <div class="inspector-row">
+                            <div class="inspector-label">Metrics</div>
+                            <div class="metrics-grid">
+                                <div class="metric-box">
+                                    <div class="metric-box-label">Confidence</div>
+                                    <div class="metric-box-value" id="inspConfVal">0.50</div>
+                                    <div class="metric-bar-bg"><div class="metric-bar-fill confidence" id="inspConfBar"></div></div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-box-label">Anomaly</div>
+                                    <div class="metric-box-value" id="inspAnomalyVal">0.00</div>
+                                    <div class="metric-bar-bg"><div class="metric-bar-fill anomaly" id="inspAnomalyBar"></div></div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-box-label">Entrep. Exp</div>
+                                    <div class="metric-box-value" id="inspExpEntVal">0.50</div>
+                                    <div class="metric-bar-bg"><div class="metric-bar-fill exp-ent" id="inspExpEntBar"></div></div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-box-label">Industry Exp</div>
+                                    <div class="metric-box-value" id="inspExpIndVal">0.50</div>
+                                    <div class="metric-bar-bg"><div class="metric-bar-fill exp-ind" id="inspExpIndBar"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="inspector-row">
+                            <div class="inspector-label">Frame</div>
+                            <div class="dim-ring-container"><svg class="dim-ring" id="dimRing" viewBox="0 0 100 100"></svg></div>
+                            <div class="frame-dims" id="frameDims"></div>
+                        </div>
+                        
+                        <div class="inspector-row" id="connectionsRow" style="display:none;">
+                            <div class="inspector-label">Connections</div>
+                            <div class="frame-dims" id="connectionsList"></div>
+                        </div>
+                        
+                        <div class="inspector-row" id="reframeRow" style="display:none;">
+                            <div class="inspector-label">Reframe History</div>
+                            <div class="history-section" id="reframeHistory"></div>
+                        </div>
+                        
+                        <div class="inspector-row">
+                            <div class="inspector-label">Recent Feedback</div>
+                            <div class="feedback-list" id="feedbackList"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="entrepreneur-grid" id="entrepreneurGrid"></div>
+                    
+                    <div class="stakeholder-info">
+                        <div class="stakeholder-title">Stakeholder Concerns <span class="hidden-badge">Hidden</span></div>
+                        <div class="stakeholder-desc">What stakeholders care about. Frames overlapping are "generative." <span id="disclosureNote" style="color:var(--accent-pink);display:none;">Concerns shift when entrepreneurs emerge (L6).</span></div>
+                        <div class="concern-dims" id="concernDims"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <footer class="outcome-footer">
+            <div class="outcome-matrix">
+                <div class="matrix-cell matrix-header"></div>
+                <div class="matrix-cell matrix-header">Generative</div>
+                <div class="matrix-cell matrix-header">Non-Gen.</div>
+                <div class="matrix-cell matrix-row-label">Persisted</div>
+                <div class="matrix-cell cell-t1s"><div class="matrix-count" id="t1s">0</div><div class="matrix-label">T1 Success</div></div>
+                <div class="matrix-cell cell-t1e"><div class="matrix-count" id="t1e">0</div><div class="matrix-label">T1 Error</div></div>
+                <div class="matrix-cell matrix-row-label">Abandoned</div>
+                <div class="matrix-cell cell-t2e"><div class="matrix-count" id="t2e">0</div><div class="matrix-label">T2 Error</div></div>
+                <div class="matrix-cell cell-t2s"><div class="matrix-count" id="t2s">0</div><div class="matrix-label">T2 Success</div></div>
+            </div>
+            
+            <div class="outcome-stats">
+                <div class="stat-card"><div class="stat-label">Full Success</div><div class="stat-value primary" id="fullRate">—</div></div>
+                <div class="stat-card"><div class="stat-label">Traditional</div><div class="stat-value secondary" id="tradRate">—</div></div>
+                <div class="stat-card"><div class="stat-label">Reframes</div><div class="stat-value highlight" id="reframeCount">0</div></div>
+                <div class="stat-card"><div class="stat-label">Disclosures</div><div class="stat-value social" id="disclosureCount">0</div></div>
+                <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value secondary" id="activeCount">0/0</div></div>
+            </div>
+            
+            <div class="outcome-explanation">
+                <strong>L4:</strong> Experience modifies learning/reframe rates<br>
+                <strong>L5:</strong> Peers influence confidence & reframe choices<br>
+                <strong>L6:</strong> Emergence shifts what stakeholders value
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const N_DIMS = 12;
+        const DIM_COLORS = [
+            '#ff6b6b', '#ffa94d', '#ffd43b', '#a9e34b', '#51cf66', '#20c997',
+            '#22b8cf', '#339af0', '#5c7cfa', '#845ef7', '#be4bdb', '#f06595'
+        ];
+        
+        const state = {
+            period: 0,
+            running: false,
+            entrepreneurs: [],
+            concerns: [],
+            initialConcerns: [],
+            selected: null,
+            outcomes: { t1s: 0, t1e: 0, t2s: 0, t2e: 0 },
+            totalReframes: 0,
+            totalDisclosures: 0,
+            layers: [true, true, true, true, true, true, true]
+        };
+        
+        const params = {
+            numEntrepreneurs: 12,
+            frameSize: 5,
+            concernConc: 0.5,
+            learningRate: 0.12,
+            effortDrain: 0.02,
+            exitThresh: 0.20,
+            emergeThresh: 0.85,
+            anomalyRate: 0.15,
+            anomalyDecay: 0.92,
+            reframeThresh: 1.2,
+            reframeCost: 0.15,
+            networkDensity: 3,
+            socialInfluence: 0.10,
+            disclosureStrength: 0.10,
+            maxPeriods: 50,
+            noise: 0.15,
+            speed: 400
+        };
+        
+        function init() {
+            bindControls();
+            reset();
+            window.addEventListener('resize', renderChart);
+        }
+        
+        function bindControls() {
+            const sliders = [
+                ['numEntrepreneurs', 'numEntrepreneursVal', v => v],
+                ['frameSize', 'frameSizeVal', v => v],
+                ['concernConc', 'concernConcVal', v => v.toFixed(1)],
+                ['learningRate', 'learningRateVal', v => v.toFixed(2)],
+                ['effortDrain', 'effortDrainVal', v => v.toFixed(3)],
+                ['exitThresh', 'exitThreshVal', v => v.toFixed(2)],
+                ['emergeThresh', 'emergeThreshVal', v => v.toFixed(2)],
+                ['anomalyRate', 'anomalyRateVal', v => v.toFixed(2)],
+                ['reframeThresh', 'reframeThreshVal', v => v.toFixed(1)],
+                ['reframeCost', 'reframeCostVal', v => v.toFixed(2)],
+                ['networkDensity', 'networkDensityVal', v => v],
+                ['socialInfluence', 'socialInfluenceVal', v => v.toFixed(2)],
+                ['disclosureStrength', 'disclosureStrengthVal', v => v.toFixed(2)],
+                ['maxPeriods', 'maxPeriodsVal', v => v],
+                ['noise', 'noiseVal', v => v.toFixed(2)],
+                ['speed', 'speedVal', v => v <= 200 ? 'Fast' : v <= 500 ? 'Normal' : 'Slow']
+            ];
+            
+            sliders.forEach(([id, valId, fmt]) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const valEl = document.getElementById(valId);
+                el.addEventListener('input', () => {
+                    params[id] = parseFloat(el.value);
+                    if (valEl) valEl.textContent = fmt(params[id]);
+                    if (id === 'maxPeriods') document.getElementById('maxPeriodDisplay').textContent = params[id];
+                    if (id === 'exitThresh' || id === 'emergeThresh') updateThresholds();
+                });
+            });
+            
+            document.querySelectorAll('.layer-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const layer = parseInt(btn.dataset.layer);
+                    state.layers[layer] = !state.layers[layer];
+                    btn.classList.toggle('active', state.layers[layer]);
+                    // Show/hide disclosure note
+                    document.getElementById('disclosureNote').style.display = state.layers[6] ? 'inline' : 'none';
+                });
+            });
+            
+            document.getElementById('aboutToggle').addEventListener('click', () => {
+                document.getElementById('aboutBar').classList.toggle('open');
+            });
+            document.getElementById('resetBtn').addEventListener('click', reset);
+            document.getElementById('stepBtn').addEventListener('click', step);
+            document.getElementById('playBtn').addEventListener('click', toggleRun);
+            document.getElementById('closeInspector').addEventListener('click', () => {
+                state.selected = null;
+                document.getElementById('inspector').classList.remove('visible');
+                renderAll();
+            });
+        }
+        
+        function updateThresholds() {
+            const emergeY = (1 - params.emergeThresh) * 100;
+            const exitY = (1 - params.exitThresh) * 100;
+            document.getElementById('emergeLabel').style.top = emergeY + '%';
+            document.getElementById('emergeLabel').textContent = params.emergeThresh.toFixed(2);
+            document.getElementById('exitLabel').style.top = exitY + '%';
+            document.getElementById('exitLabel').textContent = params.exitThresh.toFixed(2);
+        }
+        
+        function reset() {
+            state.period = 0;
+            state.running = false;
+            state.selected = null;
+            state.outcomes = { t1s: 0, t1e: 0, t2s: 0, t2e: 0 };
+            state.totalReframes = 0;
+            state.totalDisclosures = 0;
+            document.getElementById('playBtn').textContent = '▶ Run';
+            document.getElementById('inspector').classList.remove('visible');
+            document.getElementById('disclosureNote').style.display = state.layers[6] ? 'inline' : 'none';
+            
+            // Generate concerns
+            const numHigh = Math.round(N_DIMS * params.concernConc);
+            const highDims = shuffle([...Array(N_DIMS).keys()]).slice(0, numHigh);
+            state.concerns = [];
+            for (let i = 0; i < N_DIMS; i++) {
+                state.concerns[i] = highDims.includes(i) ? 0.5 + Math.random() * 0.5 : Math.random() * 0.25;
+            }
+            state.initialConcerns = [...state.concerns];
+            
+            // Generate entrepreneurs
+            state.entrepreneurs = [];
+            for (let i = 0; i < params.numEntrepreneurs; i++) {
+                // Experience levels
+                const expEnt = Math.random();
+                const expInd = Math.random();
+                
+                // Industry experience gives better initial alignment
+                let active, weights;
+                if (state.layers[4] && expInd > 0.5) {
+                    // Bias frame toward high-concern dimensions
+                    const sortedDims = state.concerns.map((c, idx) => ({idx, c})).sort((a,b) => b.c - a.c);
+                    const topDims = sortedDims.slice(0, params.frameSize + 2).map(d => d.idx);
+                    active = shuffle(topDims).slice(0, params.frameSize);
+                    weights = active.map(() => 0.4 + Math.random() * 0.5);
+                } else {
+                    active = shuffle([...Array(N_DIMS).keys()]).slice(0, params.frameSize);
+                    weights = active.map(() => 0.3 + Math.random() * 0.7);
+                }
+                
+                state.entrepreneurs.push({
+                    id: i,
+                    frame: { active: [...active], weights: [...weights] },
+                    confidence: 0.5,
+                    anomaly: 0,
+                    history: [0.5],
+                    reframePoints: [],
+                    reframeHistory: [],
+                    feedback: [],
+                    status: 'pursuing',
+                    generativity: calcGenerativity(active, weights),
+                    newDims: [],
+                    expEnt,
+                    expInd,
+                    connections: [],
+                    prevConfidence: 0.5
+                });
+            }
+            
+            // Build social network (L5)
+            if (params.networkDensity > 0) {
+                state.entrepreneurs.forEach(ent => {
+                    const others = state.entrepreneurs.filter(e => e.id !== ent.id);
+                    ent.connections = shuffle(others).slice(0, params.networkDensity).map(e => e.id);
+                });
+            }
+            
+            updateThresholds();
+            renderAll();
+        }
+        
+        function calcGenerativity(active, weights) {
+            let align = 0, tw = 0;
+            active.forEach((d, idx) => { 
+                align += state.concerns[d] * weights[idx]; 
+                tw += weights[idx]; 
+            });
+            return align / tw;
+        }
+        
+        function step() {
+            if (state.period >= params.maxPeriods) { finalizeStalled(); return; }
+            state.period++;
+            
+            // Store previous confidences for social comparison
+            state.entrepreneurs.forEach(ent => {
+                ent.prevConfidence = ent.confidence;
+            });
+            
+            state.entrepreneurs.forEach(ent => {
+                if (ent.status !== 'pursuing') {
+                    ent.history.push(ent.history[ent.history.length - 1]);
+                    return;
+                }
+                
+                ent.newDims = [];
+                
+                // L4: Calculate experience-modified parameters
+                const expEntBonus = state.layers[4] ? ent.expEnt : 0;
+                const expIndBonus = state.layers[4] ? ent.expInd : 0;
+                
+                const effectiveLearningRate = params.learningRate * (1 + 0.5 * expEntBonus);
+                const effectiveReframeThresh = params.reframeThresh * (1 - 0.3 * expEntBonus) * (1 + 0.2 * expIndBonus);
+                const effectiveReframeCost = params.reframeCost * (1 - 0.4 * expEntBonus);
+                const effectiveEffortDrain = params.effortDrain * (1 - 0.3 * expIndBonus);
+                
+                // L0: Generate raw feedback
+                const raw = [];
+                for (let d = 0; d < N_DIMS; d++) {
+                    const idx = ent.frame.active.indexOf(d);
+                    const expr = idx >= 0 ? ent.frame.weights[idx] : 0;
+                    raw[d] = expr * state.concerns[d] + (Math.random() - 0.5) * params.noise;
+                }
+                
+                // L1: Interpret through frame
+                let valence = 0;
+                if (state.layers[1]) {
+                    let sum = 0, wsum = 0;
+                    ent.frame.active.forEach((d, idx) => {
+                        sum += raw[d] * ent.frame.weights[idx];
+                        wsum += ent.frame.weights[idx];
+                    });
+                    valence = sum / wsum;
+                } else {
+                    valence = (Math.random() - 0.5) * 0.3;
+                }
+                
+                ent.feedback.unshift({ period: state.period, valence });
+                if (ent.feedback.length > 6) ent.feedback.pop();
+                
+                // L2: Update confidence with effort drain
+                if (state.layers[2]) {
+                    ent.confidence -= effectiveEffortDrain;
+                    
+                    if (valence > 0) ent.confidence += effectiveLearningRate * valence * (1 - ent.confidence);
+                    else ent.confidence += effectiveLearningRate * valence * ent.confidence;
+                    
+                    // L5: Social influence on confidence
+                    if (state.layers[5] && ent.connections.length > 0) {
+                        let socialSignal = 0;
+                        let count = 0;
+                        ent.connections.forEach(connId => {
+                            const conn = state.entrepreneurs[connId];
+                            if (conn.status === 'pursuing' || conn.status === 'emerged') {
+                                socialSignal += (conn.prevConfidence - 0.5); // deviation from neutral
+                                count++;
+                            }
+                        });
+                        if (count > 0) {
+                            socialSignal /= count;
+                            ent.confidence += params.socialInfluence * socialSignal;
+                        }
+                    }
+                    
+                    ent.confidence = Math.max(0, Math.min(1, ent.confidence));
+                }
+                
+                // L3: Anomaly and reframing
+                if (state.layers[3]) {
+                    let anomalySignal = 0;
+                    for (let d = 0; d < N_DIMS; d++) {
+                        if (!ent.frame.active.includes(d)) {
+                            const signal = Math.abs(raw[d]);
+                            if (signal > 0.2) anomalySignal += signal;
+                        }
+                    }
+                    
+                    ent.anomaly = ent.anomaly * params.anomalyDecay + anomalySignal * params.anomalyRate;
+                    
+                    if (ent.anomaly >= effectiveReframeThresh) {
+                        performReframe(ent, raw, effectiveReframeCost);
+                    }
+                }
+                
+                // Check exit/emerge
+                if (state.layers[2]) {
+                    if (ent.confidence >= params.emergeThresh) {
+                        ent.status = 'emerged';
+                        if (ent.generativity > 0.4) state.outcomes.t1s++; else state.outcomes.t1e++;
+                        
+                        // L6: World Disclosing
+                        if (state.layers[6]) {
+                            applyWorldDisclosure(ent);
+                        }
+                    } else if (ent.confidence <= params.exitThresh) {
+                        ent.status = 'exited';
+                        if (ent.generativity > 0.4) state.outcomes.t2e++; else state.outcomes.t2s++;
+                    }
+                }
+                
+                ent.history.push(ent.confidence);
+            });
+            
+            const active = state.entrepreneurs.filter(e => e.status === 'pursuing').length;
+            if (active === 0 || state.period >= params.maxPeriods) {
+                if (state.period >= params.maxPeriods) finalizeStalled();
+                state.running = false;
+                document.getElementById('playBtn').textContent = '▶ Run';
+            }
+            
+            renderAll();
+        }
+        
+        function performReframe(ent, raw, effectiveCost) {
+            // Find strongest unattended signals
+            const unattended = [];
+            for (let d = 0; d < N_DIMS; d++) {
+                if (!ent.frame.active.includes(d)) {
+                    unattended.push({ dim: d, signal: Math.abs(raw[d]) });
+                }
+            }
+            unattended.sort((a, b) => b.signal - a.signal);
+            
+            // L5: Consider successful peers' frames
+            let candidateDim = unattended[0].dim;
+            if (state.layers[5] && ent.connections.length > 0) {
+                const peerDimCounts = {};
+                ent.connections.forEach(connId => {
+                    const conn = state.entrepreneurs[connId];
+                    if (conn.status === 'emerged' || (conn.status === 'pursuing' && conn.confidence > 0.6)) {
+                        conn.frame.active.forEach(d => {
+                            if (!ent.frame.active.includes(d)) {
+                                peerDimCounts[d] = (peerDimCounts[d] || 0) + 1;
+                            }
+                        });
+                    }
+                });
+                
+                // Blend peer suggestion with own anomaly signal
+                const peerDims = Object.entries(peerDimCounts).sort((a,b) => b[1] - a[1]);
+                if (peerDims.length > 0 && Math.random() < params.socialInfluence * 3) {
+                    candidateDim = parseInt(peerDims[0][0]);
+                }
+            }
+            
+            // Find weakest current dimension
+            let weakestIdx = 0;
+            let weakestWeight = ent.frame.weights[0];
+            ent.frame.weights.forEach((w, idx) => {
+                if (w < weakestWeight) { weakestWeight = w; weakestIdx = idx; }
+            });
+            
+            const droppedDim = ent.frame.active[weakestIdx];
+            
+            ent.reframeHistory.push({ period: state.period, dropped: droppedDim, added: candidateDim });
+            ent.reframePoints.push(state.period);
+            state.totalReframes++;
+            
+            ent.frame.active[weakestIdx] = candidateDim;
+            ent.frame.weights[weakestIdx] = 0.5 + Math.random() * 0.3;
+            ent.newDims = [candidateDim];
+            ent.anomaly = 0;
+            ent.confidence = Math.max(params.exitThresh + 0.05, ent.confidence - effectiveCost);
+            ent.generativity = calcGenerativity(ent.frame.active, ent.frame.weights);
+        }
+        
+        function applyWorldDisclosure(ent) {
+            // Successful entrepreneur's frame shifts stakeholder concerns
+            const totalWeight = ent.frame.weights.reduce((a, b) => a + b, 0);
+            ent.frame.active.forEach((d, idx) => {
+                const boost = params.disclosureStrength * (ent.frame.weights[idx] / totalWeight);
+                state.concerns[d] = Math.min(1, state.concerns[d] + boost);
+            });
+            
+            // Normalize to keep total concern mass roughly constant
+            const totalConcern = state.concerns.reduce((a, b) => a + b, 0);
+            const initialTotal = state.initialConcerns.reduce((a, b) => a + b, 0);
+            if (totalConcern > initialTotal * 1.2) {
+                const factor = (initialTotal * 1.1) / totalConcern;
+                state.concerns = state.concerns.map(c => c * factor);
+            }
+            
+            state.totalDisclosures++;
+            
+            // Recalculate generativity for all pursuing entrepreneurs
+            state.entrepreneurs.forEach(e => {
+                if (e.status === 'pursuing') {
+                    e.generativity = calcGenerativity(e.frame.active, e.frame.weights);
+                }
+            });
+        }
+        
+        function finalizeStalled() {
+            state.entrepreneurs.forEach(ent => {
+                if (ent.status === 'pursuing') {
+                    ent.status = 'stalled';
+                    if (ent.generativity > 0.4) state.outcomes.t2e++; else state.outcomes.t1e++;
+                }
+            });
+        }
+        
+        function toggleRun() {
+            state.running = !state.running;
+            document.getElementById('playBtn').textContent = state.running ? '⏸ Pause' : '▶ Run';
+            if (state.running) runLoop();
+        }
+        
+        function runLoop() {
+            if (!state.running) return;
+            step();
+            if (state.running) setTimeout(runLoop, params.speed);
+        }
+        
+        function renderAll() {
+            renderChart();
+            renderGrid();
+            renderOutcomes();
+            renderConcerns();
+            document.getElementById('currentPeriod').textContent = state.period;
+            document.getElementById('progressFill').style.width = (state.period / params.maxPeriods * 100) + '%';
+            if (state.selected !== null) renderInspector(state.selected);
+        }
+        
+        function renderChart() {
+            const canvas = document.getElementById('chartCanvas');
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            
+            const w = rect.width, h = rect.height;
+            const pad = { l: 28, r: 10, t: 10, b: 18 };
+            const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            // Grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                const y = pad.t + (i / 10) * ch;
+                ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
+            }
+            
+            // Thresholds
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(63, 185, 80, 0.4)';
+            ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.emergeThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.emergeThresh) * ch); ctx.stroke();
+            ctx.strokeStyle = 'rgba(248, 81, 73, 0.4)';
+            ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.exitThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.exitThresh) * ch); ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Axes
+            ctx.fillStyle = '#6e7681';
+            ctx.font = '7px IBM Plex Mono';
+            ctx.textAlign = 'right';
+            ctx.fillText('1', pad.l - 3, pad.t + 3);
+            ctx.fillText('0', pad.l - 3, pad.t + ch + 3);
+            
+            const maxP = Math.max(state.period, 10);
+            const xs = cw / maxP;
+            
+            state.entrepreneurs.forEach(ent => {
+                if (ent.history.length < 2) return;
+                
+                ctx.beginPath();
+                ctx.lineWidth = ent.id === state.selected ? 2 : 1.2;
+                
+                if (ent.status === 'emerged') ctx.strokeStyle = '#3fb950';
+                else if (ent.status === 'exited') ctx.strokeStyle = '#f85149';
+                else if (ent.status === 'stalled') ctx.strokeStyle = '#d29922';
+                else ctx.strokeStyle = ent.id === state.selected ? '#58a6ff' : '#8b949e';
+                
+                ent.history.forEach((c, i) => {
+                    const x = pad.l + i * xs;
+                    const y = pad.t + (1 - c) * ch;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                
+                // Reframe markers
+                ctx.fillStyle = '#d29922';
+                ent.reframePoints.forEach(p => {
+                    if (p < ent.history.length) {
+                        ctx.beginPath();
+                        ctx.arc(pad.l + p * xs, pad.t + (1 - ent.history[p]) * ch, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+                
+                // Endpoint
+                const lx = pad.l + (ent.history.length - 1) * xs;
+                const ly = pad.t + (1 - ent.history[ent.history.length - 1]) * ch;
+                ctx.beginPath();
+                ctx.arc(lx, ly, ent.id === state.selected ? 3 : 2, 0, Math.PI * 2);
+                if (ent.status === 'emerged') ctx.fillStyle = '#3fb950';
+                else if (ent.status === 'exited') ctx.fillStyle = '#f85149';
+                else if (ent.status === 'stalled') ctx.fillStyle = '#d29922';
+                else ctx.fillStyle = ent.id === state.selected ? '#58a6ff' : '#8b949e';
+                ctx.fill();
+            });
+        }
+        
+        function renderGrid() {
+            const grid = document.getElementById('entrepreneurGrid');
+            grid.innerHTML = '';
+            
+            state.entrepreneurs.forEach(ent => {
+                const div = document.createElement('div');
+                div.className = 'entrepreneur-radial ' + ent.status + (ent.id === state.selected ? ' selected' : '');
+                div.onclick = () => selectEntrepreneur(ent.id);
+                
+                const confCirc = 2 * Math.PI * 15;
+                const confOffset = confCirc * (1 - ent.confidence);
+                const anomalyNorm = Math.min(ent.anomaly / params.reframeThresh, 1);
+                const anomalyCirc = 2 * Math.PI * 19;
+                const anomalyOffset = anomalyCirc * (1 - anomalyNorm);
+                
+                let strokeColor = '#8b949e';
+                if (ent.status === 'emerged') strokeColor = '#3fb950';
+                else if (ent.status === 'exited') strokeColor = '#f85149';
+                else if (ent.status === 'stalled') strokeColor = '#d29922';
+                else if (ent.confidence >= params.emergeThresh * 0.9) strokeColor = '#3fb950';
+                else if (ent.confidence <= params.exitThresh * 1.5) strokeColor = '#f85149';
+                
+                let html = `<svg viewBox="0 0 42 42">
+                    <circle class="radial-bg" cx="21" cy="21" r="19"/>`;
+                
+                if (state.layers[3] && ent.status === 'pursuing') {
+                    html += `<circle class="radial-anomaly" cx="21" cy="21" r="19" stroke="#d29922"
+                        stroke-dasharray="${anomalyCirc}" stroke-dashoffset="${anomalyOffset}" transform="rotate(-90 21 21)"/>`;
+                }
+                
+                html += `<circle class="radial-track" cx="21" cy="21" r="15"/>
+                    <circle class="radial-progress" cx="21" cy="21" r="15" stroke="${strokeColor}"
+                        stroke-dasharray="${confCirc}" stroke-dashoffset="${confOffset}" transform="rotate(-90 21 21)"/>
+                    <circle class="radial-center" cx="21" cy="21" r="11"/>
+                    <text class="radial-label" x="21" y="22">${ent.id + 1}</text>
+                </svg>`;
+                
+                // Badges
+                if (ent.reframeHistory.length > 0) {
+                    html += `<div class="badge-indicator">${ent.reframeHistory.length}</div>`;
+                }
+                if (state.layers[4] && (ent.expEnt > 0.7 || ent.expInd > 0.7)) {
+                    const expLabel = ent.expEnt > ent.expInd ? 'E' : 'I';
+                    html += `<div class="badge-indicator exp">${expLabel}</div>`;
+                }
+                if (state.layers[5] && ent.connections.length > 0) {
+                    html += `<div class="badge-indicator social">${ent.connections.length}</div>`;
+                }
+                
+                div.innerHTML = html;
+                grid.appendChild(div);
+            });
+        }
+        
+        function selectEntrepreneur(id) {
+            state.selected = id;
+            document.getElementById('inspector').classList.add('visible');
+            renderAll();
+        }
+        
+        function renderInspector(id) {
+            const ent = state.entrepreneurs[id];
+            
+            document.getElementById('inspectorName').textContent = `E${id + 1}`;
+            const statusEl = document.getElementById('inspectorStatus');
+            statusEl.textContent = ent.status;
+            statusEl.className = 'inspector-status ' + ent.status;
+            
+            // Metrics
+            document.getElementById('inspConfVal').textContent = ent.confidence.toFixed(2);
+            document.getElementById('inspConfBar').style.width = (ent.confidence * 100) + '%';
+            
+            const anomalyNorm = Math.min(ent.anomaly / params.reframeThresh, 1);
+            document.getElementById('inspAnomalyVal').textContent = ent.anomaly.toFixed(2);
+            document.getElementById('inspAnomalyBar').style.width = (anomalyNorm * 100) + '%';
+            
+            document.getElementById('inspExpEntVal').textContent = ent.expEnt.toFixed(2);
+            document.getElementById('inspExpEntBar').style.width = (ent.expEnt * 100) + '%';
+            
+            document.getElementById('inspExpIndVal').textContent = ent.expInd.toFixed(2);
+            document.getElementById('inspExpIndBar').style.width = (ent.expInd * 100) + '%';
+            
+            // Dimension ring
+            const svg = document.getElementById('dimRing');
+            svg.innerHTML = '';
+            const cx = 50, cy = 50, r = 38;
+            
+            for (let i = 0; i < N_DIMS; i++) {
+                const angle = (i / N_DIMS) * Math.PI * 2 - Math.PI / 2;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                const isActive = ent.frame.active.includes(i);
+                const isNew = ent.newDims.includes(i);
+                
+                if (state.concerns[i] > 0.3) {
+                    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    glow.setAttribute('cx', x); glow.setAttribute('cy', y);
+                    glow.setAttribute('r', 4 + state.concerns[i] * 8);
+                    glow.setAttribute('fill', DIM_COLORS[i]); glow.setAttribute('opacity', 0.2);
+                    svg.appendChild(glow);
+                }
+                
+                if (isActive) {
+                    const idx = ent.frame.active.indexOf(i);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', cx); line.setAttribute('y1', cy);
+                    line.setAttribute('x2', x); line.setAttribute('y2', y);
+                    line.setAttribute('stroke', isNew ? '#d29922' : DIM_COLORS[i]);
+                    line.setAttribute('stroke-width', ent.frame.weights[idx] * 1.5);
+                    line.setAttribute('opacity', 0.6);
+                    svg.appendChild(line);
+                }
+                
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+                circle.setAttribute('r', isActive ? 5 : 3);
+                circle.setAttribute('fill', isActive ? DIM_COLORS[i] : '#21262d');
+                circle.setAttribute('stroke', isNew ? '#d29922' : DIM_COLORS[i]);
+                circle.setAttribute('stroke-width', isActive ? (isNew ? 1.5 : 0) : 0.5);
+                svg.appendChild(circle);
+                
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x); text.setAttribute('y', y + 2);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('font-size', '5'); text.setAttribute('font-weight', '600');
+                text.setAttribute('fill', isActive ? '#0d1117' : '#6e7681');
+                text.textContent = i + 1;
+                svg.appendChild(text);
+            }
+            
+            // Frame badges
+            document.getElementById('frameDims').innerHTML = ent.frame.active.map((d, idx) => {
+                const isNew = ent.newDims.includes(d);
+                return `<div class="dim-badge${isNew ? ' new' : ''}">
+                    <div class="dim-color" style="background:${DIM_COLORS[d]}"></div>
+                    D${d+1} <span class="dim-weight">${ent.frame.weights[idx].toFixed(1)}</span>
+                </div>`;
+            }).join('');
+            
+            // Connections
+            const connRow = document.getElementById('connectionsRow');
+            const connList = document.getElementById('connectionsList');
+            if (state.layers[5] && ent.connections.length > 0) {
+                connRow.style.display = 'block';
+                connList.innerHTML = ent.connections.map(cid => {
+                    const conn = state.entrepreneurs[cid];
+                    const color = conn.status === 'emerged' ? 'var(--accent-green)' : 
+                                  conn.status === 'exited' ? 'var(--accent-red)' : 'var(--text-muted)';
+                    return `<div class="dim-badge" style="border-left: 2px solid ${color}">E${cid+1}</div>`;
+                }).join('');
+            } else {
+                connRow.style.display = 'none';
+            }
+            
+            // Reframe history
+            const reframeRow = document.getElementById('reframeRow');
+            const reframeEl = document.getElementById('reframeHistory');
+            if (ent.reframeHistory.length > 0) {
+                reframeRow.style.display = 'block';
+                reframeEl.innerHTML = ent.reframeHistory.map(r => 
+                    `<div class="history-item"><span class="period">t${r.period}:</span> D${r.dropped+1}→D${r.added+1}</div>`
+                ).join('');
+            } else {
+                reframeRow.style.display = 'none';
+            }
+            
+            // Feedback
+            document.getElementById('feedbackList').innerHTML = ent.feedback.length === 0 
+                ? '<div style="color:var(--text-muted);font-size:0.55rem">No feedback</div>'
+                : ent.feedback.map(f => {
+                    const pos = f.valence >= 0;
+                    const w = Math.min(Math.abs(f.valence) * 150, 45);
+                    return `<div class="feedback-item">
+                        <span class="feedback-period">t${f.period}</span>
+                        <div class="feedback-bar"><div class="feedback-bar-mid"></div>
+                            <div class="feedback-fill ${pos?'pos':'neg'}" style="width:${w}%"></div></div>
+                        <span class="feedback-val ${pos?'pos':'neg'}">${pos?'+':''}${f.valence.toFixed(2)}</span>
+                    </div>`;
+                }).join('');
+        }
+        
+        function renderOutcomes() {
+            document.getElementById('t1s').textContent = state.outcomes.t1s;
+            document.getElementById('t1e').textContent = state.outcomes.t1e;
+            document.getElementById('t2e').textContent = state.outcomes.t2e;
+            document.getElementById('t2s').textContent = state.outcomes.t2s;
+            
+            const total = state.outcomes.t1s + state.outcomes.t1e + state.outcomes.t2s + state.outcomes.t2e;
+            const full = state.outcomes.t1s + state.outcomes.t2s;
+            
+            document.getElementById('fullRate').textContent = total > 0 ? Math.round(full / total * 100) + '%' : '—';
+            document.getElementById('tradRate').textContent = total > 0 ? Math.round(state.outcomes.t1s / total * 100) + '%' : '—';
+            document.getElementById('reframeCount').textContent = state.totalReframes;
+            document.getElementById('disclosureCount').textContent = state.totalDisclosures;
+            document.getElementById('activeCount').textContent = `${state.entrepreneurs.filter(e => e.status === 'pursuing').length}/${state.entrepreneurs.length}`;
+        }
+        
+        function renderConcerns() {
+            document.getElementById('concernDims').innerHTML = state.concerns
+                .map((c, i) => ({ d: i, c, initial: state.initialConcerns[i] }))
+                .sort((a, b) => b.c - a.c)
+                .filter(x => x.c > 0.25)
+                .map(x => {
+                    const changed = Math.abs(x.c - x.initial) > 0.05;
+                    return `<div class="dim-badge" ${changed ? 'style="border:1px solid var(--accent-pink)"' : ''}>
+                        <div class="dim-color" style="background:${DIM_COLORS[x.d]}"></div>
+                        D${x.d+1} <span class="dim-weight">${x.c.toFixed(2)}</span>
+                    </div>`;
+                }).join('');
+        }
+        
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+        
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

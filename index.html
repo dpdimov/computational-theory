@@ -1,17 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Computational Theory Canvas - A tool for translating theoretical contributions into computational form for entrepreneurship research" />
-    <title>Computational Theory Canvas</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computational Theory Tools</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <link rel="stylesheet" href="./shared.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 3rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .tool-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-accent);
+            opacity: 0.8;
+        }
+
+        .tool-card:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--card-accent);
+        }
+
+        .tool-card.canvas { --card-accent: #2D5A4A; }
+        .tool-card.wellbeing { --card-accent: #8b5cf6; }
+        .tool-card.underground { --card-accent: #58a6ff; }
+        .tool-card.venturing { --card-accent: #3498db; }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .tool-title {
+            font-family: 'Newsreader', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .tool-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .tool-tag {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--card-accent);
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .container {
+                padding: 40px 16px;
+            }
+
+            .tool-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="site-nav">
+        <div class="nav-container">
+            <a href="./" class="nav-brand">Computational Theory</a>
+            <ul class="nav-links">
+                <li><a href="./" class="active">Home</a></li>
+                <li><a href="./theory-canvas/">Theory Canvas</a></li>
+                <li><a href="./well-being/">Well-being</a></li>
+                <li><a href="./venture-underground/">Venture Emergence</a></li>
+                <li><a href="./venturing-function/">Venturing Function</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <header>
+            <h1>Computational Theory Tools</h1>
+            <p class="subtitle">Interactive simulations for translating entrepreneurship theory into computational form</p>
+        </header>
+
+        <div class="tools-grid">
+            <a href="./theory-canvas/" class="tool-card canvas">
+                <div class="tool-icon">🧩</div>
+                <h2 class="tool-title">Computational Theory Canvas</h2>
+                <p class="tool-description">Translate theoretical contributions into computational form. Define constructs, relationships, and feedback loops across three levels of analysis.</p>
+                <span class="tool-tag">Theory Translation</span>
+            </a>
+
+            <a href="./well-being/" class="tool-card wellbeing">
+                <div class="tool-icon">⚡</div>
+                <h2 class="tool-title">Entrepreneurial Well-being</h2>
+                <p class="tool-description">Simulate dynamics of entrepreneurial well-being. Explore how ambition, skill, self-regulation, and dynamism shape motivation, strain, and performance.</p>
+                <span class="tool-tag">System Dynamics</span>
+            </a>
+
+            <a href="./venture-underground/" class="tool-card underground">
+                <div class="tool-icon">🌐</div>
+                <h2 class="tool-title">Venture Emergence</h2>
+                <p class="tool-description">Multi-entrepreneur simulation with frame-based perception, confidence trajectories, social networks, and world-disclosing feedback across 7 interactive layers.</p>
+                <span class="tool-tag">Agent Simulation</span>
+            </a>
+
+            <a href="./venturing-function/" class="tool-card venturing">
+                <div class="tool-icon">🔬</div>
+                <h2 class="tool-title">Venturing Function Dynamics</h2>
+                <p class="tool-description">Explore nested functional architecture: framing, modelling, and venturing. Run cohort simulations, sensitivity analysis, and parameter experiments.</p>
+                <span class="tool-tag">Functional Architecture</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Dimo Dimov | Computational Entrepreneurship Theory</p>
+        </footer>
+    </div>
+</body>
 </html>
