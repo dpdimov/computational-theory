@@ -228,7 +228,7 @@ const ErgodicitySandbox = () => {
   }, [ensembleData]);
 
   return (
-    <div style={{
+    <div className="ergodicity-root" style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)',
       color: '#e8e6e3',
@@ -326,7 +326,7 @@ const ErgodicitySandbox = () => {
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           gap: '2rem'
         }}>
           <div>
@@ -414,7 +414,7 @@ const ErgodicitySandbox = () => {
         padding: '1.5rem',
         backdropFilter: 'blur(10px)'
       }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.5rem' }}>
           {/* Skill slider */}
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
@@ -504,7 +504,7 @@ const ErgodicitySandbox = () => {
         maxWidth: '1400px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 500px), 1fr))',
         gap: '2rem',
         marginBottom: '2rem'
       }}>
@@ -551,6 +551,7 @@ const ErgodicitySandbox = () => {
                   borderRadius: '4px',
                   color: '#e8e6e3'
                 }}
+                formatter={(value) => value.toFixed(2)}
               />
               <Legend />
               <Line
@@ -675,7 +676,7 @@ const ErgodicitySandbox = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
             gap: '1.5rem',
             marginBottom: '1rem'
           }}>
@@ -781,7 +782,7 @@ const ErgodicitySandbox = () => {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
             gap: '1.5rem',
             marginBottom: '1.5rem'
           }}>
@@ -889,7 +890,7 @@ const ErgodicitySandbox = () => {
               But unlike saving, entrepreneurs cannot diversify temporally without institutional support. This is the paradox of caution.
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.5rem' }}>
               {/* Number of attempts */}
               <div>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
@@ -1006,7 +1007,7 @@ const ErgodicitySandbox = () => {
 
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
                 gap: '1rem',
                 marginBottom: '1.5rem'
               }}>
@@ -1130,7 +1131,7 @@ const ErgodicitySandbox = () => {
               }}>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
                   gap: '1.5rem',
                   marginBottom: '1.5rem'
                 }}>
