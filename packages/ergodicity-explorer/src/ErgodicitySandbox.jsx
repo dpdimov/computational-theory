@@ -558,7 +558,7 @@ const ErgodicitySandbox = () => {
                 dataKey="ensembleAvg"
                 stroke="#f4a261"
                 strokeWidth={3}
-                name="Ensemble Average (Mean)"
+                name="Ensemble Average"
                 dot={false}
               />
               <Line
@@ -566,7 +566,7 @@ const ErgodicitySandbox = () => {
                 dataKey="timeAvg"
                 stroke="#4ecdc4"
                 strokeWidth={3}
-                name="Time Average (Geometric Mean)"
+                name="Time Average"
                 dot={false}
               />
             </LineChart>
