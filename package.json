@@ -9,6 +9,7 @@
     "build:react": "npm run build --workspaces --if-present",
     "dev:theory-canvas": "npm run dev -w @computational-theory/theory-canvas",
     "dev:well-being": "npm run dev -w @computational-theory/well-being",
-    "dev:ergodicity-explorer": "npm run dev -w @computational-theory/ergodicity-explorer"
+    "dev:ergodicity-explorer": "npm run dev -w @computational-theory/ergodicity-explorer",
+    "dev:belief-validation": "npm run dev -w @computational-theory/belief-validation"
   }
 }
