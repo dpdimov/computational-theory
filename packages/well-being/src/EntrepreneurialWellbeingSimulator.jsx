@@ -193,60 +193,60 @@ const SystemDiagram = ({ currentState, isActive }) => {
   const getOpacity = (value, max = 1) => isActive ? Math.min(1, Math.max(0.2, Math.abs(value) / max)) : 0.15;
 
   return (
-    <div style={{ background: 'rgba(15, 23, 42, 0.9)', borderRadius: '12px', padding: '1.25rem', border: '1px solid #334155' }}>
-      <h3 style={{ fontSize: '1.1rem', color: '#94a3b8', marginBottom: '1rem', fontWeight: 500 }}>
+    <div style={{ background: '#ffffff', borderRadius: '12px', padding: '1.25rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+      <h3 style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '1rem', fontWeight: 500 }}>
         System State
       </h3>
       
       <svg viewBox="0 0 320 280" style={{ width: '100%', height: 'auto' }}>
         {/* STOCK: Motivation */}
-        <rect x="15" y="60" width="70" height="35" rx="3" fill="#1e3a5f" stroke="#3b82f6" strokeWidth="2" />
-        <text x="50" y="75" textAnchor="middle" fill="#93c5fd" fontSize="13" fontWeight="500">Motivation</text>
+        <rect x="15" y="60" width="70" height="35" rx="3" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2" />
+        <text x="50" y="75" textAnchor="middle" fill="#3b82f6" fontSize="13" fontWeight="500">Motivation</text>
         <text x="50" y="88" textAnchor="middle" fill="#3b82f6" fontSize="13" fontWeight="700">
           {isActive ? m.toFixed(1) : '—'}
         </text>
 
         {/* STOCK: Strain */}
-        <rect x="15" y="140" width="70" height="35" rx="3" fill="#3f1f1f" stroke="#ef4444" strokeWidth="2" />
-        <text x="50" y="155" textAnchor="middle" fill="#fca5a5" fontSize="13" fontWeight="500">Strain</text>
+        <rect x="15" y="140" width="70" height="35" rx="3" fill="#fef2f2" stroke="#ef4444" strokeWidth="2" />
+        <text x="50" y="155" textAnchor="middle" fill="#ef4444" fontSize="13" fontWeight="500">Strain</text>
         <text x="50" y="168" textAnchor="middle" fill="#ef4444" fontSize="13" fontWeight="700">
           {isActive ? s.toFixed(1) : '—'}
         </text>
 
         {/* GAUGE: Well-being */}
         <rect x="100" y="100" width="60" height="35" rx="17" 
-          fill={isActive && wb > 0 ? 'rgba(16, 185, 129, 0.2)' : isActive ? 'rgba(239, 68, 68, 0.2)' : '#1e293b'} 
-          stroke={isActive && wb > 0 ? '#10b981' : isActive ? '#ef4444' : '#475569'} strokeWidth="2" />
-        <text x="130" y="113" textAnchor="middle" fill="#94a3b8" fontSize="10">Well-being</text>
+          fill={isActive && wb > 0 ? 'rgba(16, 185, 129, 0.1)' : isActive ? 'rgba(239, 68, 68, 0.1)' : '#f1f5f9'}
+          stroke={isActive && wb > 0 ? '#10b981' : isActive ? '#ef4444' : '#e2e8f0'} strokeWidth="2" />
+        <text x="130" y="113" textAnchor="middle" fill="#64748b" fontSize="10">Well-being</text>
         <text x="130" y="127" textAnchor="middle" 
           fill={isActive && wb > 0 ? '#10b981' : isActive ? '#ef4444' : '#64748b'} fontSize="14" fontWeight="700">
           {isActive ? wb.toFixed(1) : '—'}
         </text>
 
         {/* FLOW: Effort */}
-        <rect x="175" y="100" width="55" height="35" rx="3" fill="#1e293b" stroke="#f59e0b" strokeWidth="2" />
-        <text x="202" y="113" textAnchor="middle" fill="#fcd34d" fontSize="13" fontWeight="500">Effort</text>
+        <rect x="175" y="100" width="55" height="35" rx="3" fill="#fffbeb" stroke="#f59e0b" strokeWidth="2" />
+        <text x="202" y="113" textAnchor="middle" fill="#f59e0b" fontSize="13" fontWeight="500">Effort</text>
         <text x="202" y="127" textAnchor="middle" fill="#f59e0b" fontSize="13" fontWeight="700">
           {isActive ? e.toFixed(2) : '—'}
         </text>
 
         {/* STOCK: Performance (Progress) */}
-        <rect x="245" y="60" width="65" height="35" rx="3" fill="#2e1f4d" stroke="#8b5cf6" strokeWidth="2" />
-        <text x="277" y="75" textAnchor="middle" fill="#c4b5fd" fontSize="13" fontWeight="500">Performance</text>
+        <rect x="245" y="60" width="65" height="35" rx="3" fill="#f5f3ff" stroke="#8b5cf6" strokeWidth="2" />
+        <text x="277" y="75" textAnchor="middle" fill="#8b5cf6" fontSize="13" fontWeight="500">Performance</text>
         <text x="277" y="88" textAnchor="middle" fill="#8b5cf6" fontSize="13" fontWeight="700">
           {isActive ? p.toFixed(1) : '—'}
         </text>
 
         {/* AUX: Resources */}
-        <ellipse cx="160" cy="40" rx="35" ry="15" fill="#1e293b" stroke="#10b981" strokeWidth="1.5" />
-        <text x="160" y="37" textAnchor="middle" fill="#6ee7b7" fontSize="10">Resources</text>
+        <ellipse cx="160" cy="40" rx="35" ry="15" fill="#f1f5f9" stroke="#10b981" strokeWidth="1.5" />
+        <text x="160" y="37" textAnchor="middle" fill="#10b981" fontSize="10">Resources</text>
         <text x="160" y="48" textAnchor="middle" fill="#10b981" fontSize="13" fontWeight="600">
           {isActive ? r.toFixed(2) : '—'}
         </text>
 
         {/* AUX: Recovery */}
-        <ellipse cx="100" cy="210" rx="32" ry="14" fill="#1e293b" stroke="#10b981" strokeWidth="1.5" />
-        <text x="100" y="207" textAnchor="middle" fill="#6ee7b7" fontSize="10">Recovery</text>
+        <ellipse cx="100" cy="210" rx="32" ry="14" fill="#f1f5f9" stroke="#10b981" strokeWidth="1.5" />
+        <text x="100" y="207" textAnchor="middle" fill="#10b981" fontSize="10">Recovery</text>
         <text x="100" y="218" textAnchor="middle" fill="#10b981" fontSize="13" fontWeight="600">
           {isActive ? rec.toFixed(2) : '—'}
         </text>
@@ -272,9 +272,9 @@ const SystemDiagram = ({ currentState, isActive }) => {
         {/* Legend */}
         <g transform="translate(200, 155)">
           <text x="0" y="0" fill="#475569" fontSize="9" fontWeight="500">LEGEND</text>
-          <rect x="0" y="6" width="22" height="9" rx="2" fill="#1e3a5f" stroke="#3b82f6" strokeWidth="1" />
+          <rect x="0" y="6" width="22" height="9" rx="2" fill="#eff6ff" stroke="#3b82f6" strokeWidth="1" />
           <text x="26" y="13" fill="#64748b" fontSize="8">Stock</text>
-          <ellipse cx="11" cy="26" rx="11" ry="5" fill="#1e293b" stroke="#10b981" strokeWidth="1" />
+          <ellipse cx="11" cy="26" rx="11" ry="5" fill="#f1f5f9" stroke="#10b981" strokeWidth="1" />
           <text x="26" y="28" fill="#64748b" fontSize="8">Auxiliary</text>
           <rect x="0" y="35" width="22" height="9" rx="4" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" strokeWidth="1" />
           <text x="26" y="42" fill="#64748b" fontSize="8">Gauge</text>
@@ -297,7 +297,7 @@ const SystemDiagram = ({ currentState, isActive }) => {
 const ParameterSlider = ({ label, value, onChange, description, color, min = 0, max = 1, step = 0.1 }) => (
   <div style={{ marginBottom: '1.5rem' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-      <label style={{ fontWeight: 500, color: '#e2e8f0', fontSize: '1rem' }}>{label}</label>
+      <label style={{ fontWeight: 500, color: '#1e293b', fontSize: '1rem' }}>{label}</label>
       <span style={{ background: color, padding: '3px 10px', borderRadius: '4px', fontSize: '1.05rem', fontWeight: 600, color: 'white' }}>
         {value.toFixed(1)}
       </span>
@@ -307,7 +307,7 @@ const ParameterSlider = ({ label, value, onChange, description, color, min = 0, 
       onChange={(e) => onChange(parseFloat(e.target.value))}
       style={{ width: '100%', accentColor: color, height: '6px' }}
     />
-    <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.4rem', lineHeight: 1.4 }}>{description}</p>
+    <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.4rem', lineHeight: 1.4 }}>{description}</p>
   </div>
 );
 
@@ -456,14 +456,14 @@ export default function EntrepreneurialWellbeingSimulator() {
   const outcome = getOutcomeInterpretation();
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(145deg, #0c1222 0%, #1a2744 50%, #0f172a 100%)', color: '#e2e8f0', fontFamily: "'IBM Plex Sans', -apple-system, sans-serif", padding: '1rem' }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#1e293b', fontFamily: "'IBM Plex Sans', -apple-system, sans-serif", padding: '1rem' }}>
       
       {/* Header */}
-      <header style={{ textAlign: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid #334155' }}>
+      <header style={{ textAlign: 'center', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid #e2e8f0' }}>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 600, background: 'linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.3rem' }}>
           Dynamics of Entrepreneurial Well-being
         </h1>
-        <p style={{ color: '#94a3b8', fontSize: '1.05rem', maxWidth: '550px', margin: '0 auto 0.2rem' }}>
+        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '550px', margin: '0 auto 0.2rem' }}>
           Computational simulation exploring how ambition, skill, self-regulation, and dynamism shape outcomes
         </p>
         <p style={{ color: '#64748b', fontSize: '0.75rem', fontStyle: 'italic', maxWidth: '600px', margin: '0 auto' }}>
@@ -474,8 +474,8 @@ export default function EntrepreneurialWellbeingSimulator() {
       <div className="main-grid">
         
         {/* Left Panel: Parameters */}
-        <aside style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '1.25rem', border: '1px solid #334155' }}>
-          <h2 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', color: '#f1f5f9', fontWeight: 600 }}>
+        <aside style={{ background: '#ffffff', borderRadius: '10px', padding: '1.25rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', color: '#1e293b', fontWeight: 600 }}>
             Parameters
           </h2>
           
@@ -489,21 +489,21 @@ export default function EntrepreneurialWellbeingSimulator() {
             description="Market turbulence. Controls setback frequency (Poisson rate)." />
 
           {/* Seed control */}
-          <div style={{ marginTop: '0.6rem', padding: '0.5rem', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '6px', border: '1px solid #334155' }}>
+          <div style={{ marginTop: '0.6rem', padding: '0.5rem', background: '#f1f5f9', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-              <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Random Seed</span>
+              <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Random Seed</span>
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }}>
                 <input type="checkbox" checked={lockSeed} onChange={(e) => setLockSeed(e.target.checked)}
                   style={{ accentColor: '#8b5cf6', width: '11px', height: '11px' }} />
-                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Lock</span>
+                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Lock</span>
               </label>
             </div>
             <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-              <code style={{ flex: 1, fontSize: '0.8rem', color: '#8b5cf6', background: '#1e293b', padding: '0.2rem 0.35rem', borderRadius: '3px' }}>
+              <code style={{ flex: 1, fontSize: '0.8rem', color: '#8b5cf6', background: '#ffffff', padding: '0.2rem 0.35rem', borderRadius: '3px', border: '1px solid #e2e8f0' }}>
                 {currentSeed || '—'}
               </code>
-              <button onClick={generateNewSeed} 
-                style={{ fontSize: '0.75rem', padding: '0.2rem 0.35rem', background: '#374151', border: 'none', borderRadius: '3px', color: '#94a3b8', cursor: 'pointer' }}>
+              <button onClick={generateNewSeed}
+                style={{ fontSize: '0.75rem', padding: '0.2rem 0.35rem', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '3px', color: '#64748b', cursor: 'pointer' }}>
                 New
               </button>
             </div>
@@ -516,11 +516,11 @@ export default function EntrepreneurialWellbeingSimulator() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', marginTop: '0.6rem' }}>
             <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.1rem' }}>Single trajectory (animated)</div>
             <button onClick={runAnimatedSimulation} disabled={isRunning}
-              style={{ background: ambition === 0 ? '#374151' : 'linear-gradient(135deg, #8b5cf6, #6366f1)', color: 'white', border: 'none', padding: '0.55rem', borderRadius: '6px', fontWeight: 600, cursor: isRunning || ambition === 0 ? 'not-allowed' : 'pointer', opacity: isRunning ? 0.7 : 1, fontSize: '1.1rem' }}>
+              style={{ background: ambition === 0 ? '#f1f5f9' : 'linear-gradient(135deg, #8b5cf6, #6366f1)', color: ambition === 0 ? '#64748b' : 'white', border: ambition === 0 ? '1px solid #e2e8f0' : 'none', padding: '0.55rem', borderRadius: '6px', fontWeight: 600, cursor: isRunning || ambition === 0 ? 'not-allowed' : 'pointer', opacity: isRunning ? 0.7 : 1, fontSize: '1.1rem' }}>
               {ambition === 0 ? 'Set Ambition > 0' : isRunning ? `Period ${currentIndex * 5}/500` : '▶ Run Once'}
             </button>
             {isRunning && (
-              <button onClick={skipToEnd} style={{ background: '#374151', color: '#e2e8f0', border: '1px solid #4b5563', padding: '0.35rem', borderRadius: '5px', cursor: 'pointer', fontSize: '1.05rem' }}>
+              <button onClick={skipToEnd} style={{ background: '#f1f5f9', color: '#1e293b', border: '1px solid #e2e8f0', padding: '0.35rem', borderRadius: '5px', cursor: 'pointer', fontSize: '1.05rem' }}>
                 Skip to End
               </button>
             )}
@@ -528,13 +528,13 @@ export default function EntrepreneurialWellbeingSimulator() {
             <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem', marginBottom: '0.1rem' }}>Distribution analysis</div>
             <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
               <button onClick={runDistributionAnalysis} disabled={isRunning || ambition === 0}
-                style={{ flex: 1, background: '#374151', color: '#e2e8f0', border: '1px solid #4b5563', padding: '0.35rem', borderRadius: '5px', cursor: isRunning || ambition === 0 ? 'not-allowed' : 'pointer', fontSize: '1.05rem', opacity: isRunning || ambition === 0 ? 0.5 : 1 }}>
+                style={{ flex: 1, background: '#f1f5f9', color: '#1e293b', border: '1px solid #e2e8f0', padding: '0.35rem', borderRadius: '5px', cursor: isRunning || ambition === 0 ? 'not-allowed' : 'pointer', fontSize: '1.05rem', opacity: isRunning || ambition === 0 ? 0.5 : 1 }}>
                 ◆ Run {numSimulations}×
               </button>
-              <select 
-                value={numSimulations} 
+              <select
+                value={numSimulations}
                 onChange={(e) => setNumSimulations(parseInt(e.target.value))}
-                style={{ background: '#374151', color: '#e2e8f0', border: '1px solid #4b5563', padding: '0.3rem', borderRadius: '5px', fontSize: '0.85rem', cursor: 'pointer' }}>
+                style={{ background: '#ffffff', color: '#1e293b', border: '1px solid #e2e8f0', padding: '0.3rem', borderRadius: '5px', fontSize: '0.85rem', cursor: 'pointer' }}>
                 <option value={10}>10</option>
                 <option value={25}>25</option>
                 <option value={50}>50</option>
@@ -552,16 +552,16 @@ export default function EntrepreneurialWellbeingSimulator() {
           </div>
 
           {/* Advanced Settings - Coefficient Weights */}
-          <div style={{ marginTop: '0.6rem', border: '1px solid #334155', borderRadius: '6px', overflow: 'hidden' }}>
+          <div style={{ marginTop: '0.6rem', border: '1px solid #e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
             <button onClick={() => setShowAdvanced(!showAdvanced)}
-              style={{ width: '100%', padding: '0.45rem 0.5rem', background: 'rgba(15, 23, 42, 0.5)', border: 'none', color: '#94a3b8', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              style={{ width: '100%', padding: '0.45rem 0.5rem', background: '#f1f5f9', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{showAdvanced ? '▼' : '▶'} Advanced: Weights</span>
               {Object.values(coefficients).some(v => v !== 1) && (
                 <span style={{ background: '#f59e0b', color: '#000', fontSize: '0.7rem', padding: '1px 4px', borderRadius: '3px', fontWeight: 600 }}>Modified</span>
               )}
             </button>
             {showAdvanced && (
-              <div style={{ padding: '0.5rem', background: 'rgba(15, 23, 42, 0.3)' }}>
+              <div style={{ padding: '0.5rem', background: '#ffffff' }}>
                 <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.4rem', lineHeight: 1.3 }}>
                   Adjust relationship strengths (0-1). Default = 1.
                 </p>
@@ -570,14 +570,14 @@ export default function EntrepreneurialWellbeingSimulator() {
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ fontSize: '0.75rem', color: '#3b82f6', fontWeight: 600, marginBottom: '0.2rem' }}>Motivation</div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V1 (M↑)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V1 (M↑)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var1}
                       onChange={(e) => updateCoefficient('var1', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#3b82f6' }} />
                     <span style={{ fontSize: '0.7rem', color: '#3b82f6', width: '22px', textAlign: 'right' }}>{coefficients.var1.toFixed(1)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V7 (M↓)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V7 (M↓)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var7}
                       onChange={(e) => updateCoefficient('var7', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#3b82f6' }} />
@@ -589,21 +589,21 @@ export default function EntrepreneurialWellbeingSimulator() {
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 600, marginBottom: '0.2rem' }}>Strain</div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V4 (C→S↑)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V4 (C→S↑)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var4}
                       onChange={(e) => updateCoefficient('var4', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#ef4444' }} />
                     <span style={{ fontSize: '0.7rem', color: '#ef4444', width: '22px', textAlign: 'right' }}>{coefficients.var4.toFixed(1)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V5 (H→S↑)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V5 (H→S↑)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var5}
                       onChange={(e) => updateCoefficient('var5', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#ef4444' }} />
                     <span style={{ fontSize: '0.7rem', color: '#ef4444', width: '22px', textAlign: 'right' }}>{coefficients.var5.toFixed(1)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V6 (S↓)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V6 (S↓)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var6}
                       onChange={(e) => updateCoefficient('var6', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#ef4444' }} />
@@ -615,14 +615,14 @@ export default function EntrepreneurialWellbeingSimulator() {
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600, marginBottom: '0.2rem' }}>Recovery</div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V2 (C→Rec)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V2 (C→Rec)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var2}
                       onChange={(e) => updateCoefficient('var2', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#10b981' }} />
                     <span style={{ fontSize: '0.7rem', color: '#10b981', width: '22px', textAlign: 'right' }}>{coefficients.var2.toFixed(1)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V3 (H→Rec)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V3 (H→Rec)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var3}
                       onChange={(e) => updateCoefficient('var3', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#10b981' }} />
@@ -634,7 +634,7 @@ export default function EntrepreneurialWellbeingSimulator() {
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 600, marginBottom: '0.2rem' }}>Effort</div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V8 (Effort)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V8 (Effort)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var8}
                       onChange={(e) => updateCoefficient('var8', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#f59e0b' }} />
@@ -645,14 +645,14 @@ export default function EntrepreneurialWellbeingSimulator() {
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ fontSize: '0.75rem', color: '#8b5cf6', fontWeight: 600, marginBottom: '0.2rem' }}>Well-being</div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V9 (M→WB)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V9 (M→WB)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var9}
                       onChange={(e) => updateCoefficient('var9', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#8b5cf6' }} />
                     <span style={{ fontSize: '0.7rem', color: '#8b5cf6', width: '22px', textAlign: 'right' }}>{coefficients.var9.toFixed(1)}</span>
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#94a3b8', width: '55px' }}>V10 (S→WB)</span>
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', width: '55px' }}>V10 (S→WB)</span>
                     <input type="range" min="0" max="1" step="0.1" value={coefficients.var10}
                       onChange={(e) => updateCoefficient('var10', parseFloat(e.target.value))}
                       style={{ flex: 1, height: '4px', accentColor: '#8b5cf6' }} />
@@ -661,7 +661,7 @@ export default function EntrepreneurialWellbeingSimulator() {
                 </div>
 
                 <button onClick={resetCoefficients}
-                  style={{ width: '100%', padding: '0.3rem', background: '#374151', border: 'none', borderRadius: '4px', color: '#94a3b8', fontSize: '0.75rem', cursor: 'pointer', marginTop: '0.2rem' }}>
+                  style={{ width: '100%', padding: '0.3rem', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', color: '#64748b', fontSize: '0.75rem', cursor: 'pointer', marginTop: '0.2rem' }}>
                   Reset All to 1.0
                 </button>
               </div>
@@ -674,16 +674,16 @@ export default function EntrepreneurialWellbeingSimulator() {
           {viewMode === 'single' ? (
             <>
               {/* Performance & Well-being Chart */}
-              <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '0.85rem', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.05rem', color: '#94a3b8', marginBottom: '0.4rem', fontWeight: 500 }}>
+              <div style={{ background: '#ffffff', borderRadius: '10px', padding: '0.85rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+                <h3 style={{ fontSize: '1.05rem', color: '#64748b', marginBottom: '0.4rem', fontWeight: 500 }}>
                   Performance & Well-being
                 </h3>
                 <ResponsiveContainer width="100%" height={165}>
                   <LineChart data={trajectory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis dataKey="period" stroke="#64748b" tick={{ fontSize: 11 }} />
                     <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #374151', borderRadius: '5px', fontSize: '0.8rem' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: '5px', fontSize: '0.8rem' }} />
                     <Legend wrapperStyle={{ fontSize: '0.8rem' }} />
                     <ReferenceLine y={0} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
                     <Line type="monotone" dataKey="performance" stroke="#8b5cf6" strokeWidth={2} dot={false} name="Performance" />
@@ -693,16 +693,16 @@ export default function EntrepreneurialWellbeingSimulator() {
               </div>
 
               {/* Motivation & Strain Chart */}
-              <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '0.85rem', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.05rem', color: '#94a3b8', marginBottom: '0.4rem', fontWeight: 500 }}>
+              <div style={{ background: '#ffffff', borderRadius: '10px', padding: '0.85rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+                <h3 style={{ fontSize: '1.05rem', color: '#64748b', marginBottom: '0.4rem', fontWeight: 500 }}>
                   Motivation, Strain & Effort
                 </h3>
                 <ResponsiveContainer width="100%" height={140}>
                   <LineChart data={trajectory}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis dataKey="period" stroke="#64748b" tick={{ fontSize: 11 }} />
                     <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #374151', borderRadius: '5px', fontSize: '0.8rem' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: '5px', fontSize: '0.8rem' }} />
                     <Legend wrapperStyle={{ fontSize: '0.8rem' }} />
                     <Line type="monotone" dataKey="motivation" stroke="#3b82f6" strokeWidth={2} dot={false} name="Motivation" />
                     <Line type="monotone" dataKey="strain" stroke="#ef4444" strokeWidth={2} dot={false} name="Strain" />
@@ -720,8 +720,8 @@ export default function EntrepreneurialWellbeingSimulator() {
                     { label: 'Effort', value: finalState.effort.toFixed(2), color: finalState.effort > 0.5 ? '#f59e0b' : '#64748b' },
                     { label: 'Resources', value: finalState.resources.toFixed(2), color: '#3b82f6' }
                   ].map((m, i) => (
-                    <div key={i} style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '5px', padding: '0.45rem', borderLeft: `3px solid ${m.color}`, border: '1px solid #334155' }}>
-                      <span style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{m.label}</span>
+                    <div key={i} style={{ background: '#ffffff', borderRadius: '5px', padding: '0.45rem', borderLeft: `3px solid ${m.color}`, border: '1px solid #e2e8f0' }}>
+                      <span style={{ fontSize: '0.7rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{m.label}</span>
                       <span style={{ display: 'block', fontSize: '1.1rem', fontWeight: 700, color: m.color }}>{m.value}</span>
                     </div>
                   ))}
@@ -730,26 +730,26 @@ export default function EntrepreneurialWellbeingSimulator() {
 
               {/* Outcome */}
               {outcome && (
-                <div style={{ background: outcome.bg, borderRadius: '6px', padding: '1rem', borderLeft: `3px solid ${outcome.color}`, border: '1px solid #334155' }}>
+                <div style={{ background: outcome.bg, borderRadius: '6px', padding: '1rem', borderLeft: `3px solid ${outcome.color}`, border: '1px solid #e2e8f0' }}>
                   <h4 style={{ fontSize: '1.05rem', color: outcome.color, marginBottom: '0.2rem', fontWeight: 600 }}>{outcome.title}</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.4 }}>{outcome.text}</p>
+                  <p style={{ fontSize: '0.85rem', color: '#1e293b', lineHeight: 1.4 }}>{outcome.text}</p>
                 </div>
               )}
             </>
           ) : (
             /* Distribution View */
-            <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '0.85rem', border: '1px solid #334155', flex: 1 }}>
-              <h3 style={{ fontSize: '1.05rem', color: '#94a3b8', marginBottom: '0.4rem', fontWeight: 500 }}>
+            <div style={{ background: '#ffffff', borderRadius: '10px', padding: '0.85rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', flex: 1 }}>
+              <h3 style={{ fontSize: '1.05rem', color: '#64748b', marginBottom: '0.4rem', fontWeight: 500 }}>
                 Distribution ({multiRunResults.length} Simulations)
               </h3>
               <ResponsiveContainer width="100%" height={260}>
                 <ScatterChart margin={{ bottom: 20, left: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis type="number" dataKey="performance" stroke="#64748b" tick={{ fontSize: 11 }}
                     label={{ value: 'Performance', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 9 }} />
                   <YAxis type="number" dataKey="wellbeing" stroke="#64748b" tick={{ fontSize: 11 }}
                     label={{ value: 'Well-being', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 9 }} />
-                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #374151', borderRadius: '5px', fontSize: '0.8rem' }}
+                  <Tooltip contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderRadius: '5px', fontSize: '0.8rem' }}
                     formatter={(value) => value.toFixed(1)} />
                   <ReferenceLine y={0} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
                   <Scatter data={multiRunResults} fill="#8b5cf6" fillOpacity={0.7} />
@@ -764,7 +764,7 @@ export default function EntrepreneurialWellbeingSimulator() {
                   { label: 'Burnout (WB<-20)', value: `${((multiRunResults.filter(r => r.wellbeing < -20).length / multiRunResults.length) * 100).toFixed(0)}%` }
                 ].map((s, i) => (
                   <div key={i} style={{ textAlign: 'center' }}>
-                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#94a3b8' }}>{s.label}</span>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: '#64748b' }}>{s.label}</span>
                     <span style={{ fontSize: '1.05rem', fontWeight: 600, color: '#8b5cf6' }}>{s.value}</span>
                   </div>
                 ))}
@@ -778,47 +778,47 @@ export default function EntrepreneurialWellbeingSimulator() {
           <SystemDiagram currentState={currentState} isActive={trajectory.length > 0} />
           
           {/* Equations */}
-          <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', border: '1px solid #334155', overflow: 'hidden' }}>
+          <div style={{ background: '#ffffff', borderRadius: '10px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
             <button onClick={() => setShowEquations(!showEquations)}
-              style={{ width: '100%', padding: '0.5rem 0.65rem', background: 'none', border: 'none', color: '#94a3b8', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left' }}>
+              style={{ width: '100%', padding: '0.5rem 0.65rem', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer', textAlign: 'left' }}>
               {showEquations ? '▼' : '▶'} Model Equations
             </button>
             {showEquations && (
               <div style={{ padding: '0 0.65rem 0.65rem', fontSize: '0.75rem', fontFamily: 'monospace', lineHeight: 1.5 }}>
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Stocks (Σ over time)</div>
-                  <code style={{ color: '#94a3b8' }}>M, S, P, CumulEffort</code>
+                  <code style={{ color: '#64748b' }}>M, S, P, CumulEffort</code>
                 </div>
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Effort</div>
-                  <code style={{ color: '#94a3b8' }}>1/(1+e^(S-M))</code>
+                  <code style={{ color: '#64748b' }}>1/(1+e^(S-M))</code>
                 </div>
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Flows</div>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>M↑ = max(C,Res)×Rec</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>M↓ = min(M,(1-SR)×H)</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>S↑ = (1-SR)(C+H)/(2A)</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>S↓ = min(S,Res×Rec)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>M↑ = max(C,Res)×Rec</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>M↓ = min(M,(1-SR)×H)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>S↑ = (1-SR)(C+H)/(2A)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>S↓ = min(S,Res×Rec)</code>
                 </div>
                 <div style={{ marginBottom: '0.4rem' }}>
                   <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Performance</div>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>Adv = E×Sk×N(0,A,0,A)</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>Set = Pois(D)×min(P,N)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>Adv = E×Sk×N(0,A,0,A)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>Set = Pois(D)×min(P,N)</code>
                 </div>
                 <div>
                   <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Auxiliary</div>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>Res = A(1-t/T)+RP×t/T</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>Rec = 1-(1-SR)(C+H)/(2A)</code>
-                  <code style={{ display: 'block', color: '#94a3b8' }}>WB = M - S</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>Res = A(1-t/T)+RP×t/T</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>Rec = 1-(1-SR)(C+H)/(2A)</code>
+                  <code style={{ display: 'block', color: '#64748b' }}>WB = M - S</code>
                 </div>
               </div>
             )}
           </div>
 
           {/* Insights */}
-          <div style={{ background: 'rgba(30, 41, 59, 0.7)', borderRadius: '10px', padding: '1rem', border: '1px solid #334155' }}>
-            <h3 style={{ fontSize: '1rem', color: '#94a3b8', marginBottom: '0.5rem', fontWeight: 500 }}>Key Insights</h3>
-            <ul style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5, paddingLeft: '1rem', margin: 0 }}>
+          <div style={{ background: '#ffffff', borderRadius: '10px', padding: '1rem', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+            <h3 style={{ fontSize: '1rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 500 }}>Key Insights</h3>
+            <ul style={{ fontSize: '0.85rem', color: '#1e293b', lineHeight: 1.5, paddingLeft: '1rem', margin: 0 }}>
               <li style={{ marginBottom: '0.35rem' }}>Ambition activates system but also increases stressors</li>
               <li style={{ marginBottom: '0.35rem' }}>Self-regulation has minimum threshold to avoid burnout</li>
               <li style={{ marginBottom: '0.35rem' }}>Skill amplifies effort → performance</li>

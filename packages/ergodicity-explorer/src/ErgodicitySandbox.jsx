@@ -230,8 +230,8 @@ const ErgodicitySandbox = () => {
   return (
     <div className="ergodicity-root" style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)',
-      color: '#e8e6e3',
+      background: '#f8fafc',
+      color: '#1e293b',
       fontFamily: "'IBM Plex Sans', -apple-system, sans-serif",
       padding: '2rem'
     }}>
@@ -255,7 +255,7 @@ const ErgodicitySandbox = () => {
         </h1>
         <p style={{
           fontSize: '1.1rem',
-          color: '#a8b2d1',
+          color: '#64748b',
           fontWeight: '300',
           maxWidth: '900px',
           lineHeight: '1.6'
@@ -271,7 +271,7 @@ const ErgodicitySandbox = () => {
         marginBottom: '2rem',
         display: 'flex',
         gap: '1rem',
-        borderBottom: '1px solid rgba(164, 178, 209, 0.1)'
+        borderBottom: '1px solid #e2e8f0'
       }}>
         <button
           onClick={() => setActiveTab('basic')}
@@ -280,7 +280,7 @@ const ErgodicitySandbox = () => {
             background: activeTab === 'basic' ? 'rgba(244, 162, 97, 0.1)' : 'transparent',
             border: 'none',
             borderBottom: activeTab === 'basic' ? '2px solid #f4a261' : '2px solid transparent',
-            color: activeTab === 'basic' ? '#f4a261' : '#a8b2d1',
+            color: activeTab === 'basic' ? '#f4a261' : '#64748b',
             fontWeight: '500',
             cursor: 'pointer',
             fontSize: '0.875rem',
@@ -298,7 +298,7 @@ const ErgodicitySandbox = () => {
             background: activeTab === 'extended' ? 'rgba(78, 205, 196, 0.1)' : 'transparent',
             border: 'none',
             borderBottom: activeTab === 'extended' ? '2px solid #4ecdc4' : '2px solid transparent',
-            color: activeTab === 'extended' ? '#4ecdc4' : '#a8b2d1',
+            color: activeTab === 'extended' ? '#4ecdc4' : '#64748b',
             fontWeight: '500',
             cursor: 'pointer',
             fontSize: '0.875rem',
@@ -318,11 +318,11 @@ const ErgodicitySandbox = () => {
         maxWidth: '1400px',
         margin: '0 auto',
         marginBottom: '2rem',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(164, 178, 209, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '8px',
         padding: '1.5rem',
-        backdropFilter: 'blur(10px)'
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}>
         <div style={{
           display: 'grid',
@@ -341,7 +341,7 @@ const ErgodicitySandbox = () => {
             }}>
               Success = Skill × Luck
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#a8b2d1', lineHeight: '1.5' }}>
+            <div style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: '1.5' }}>
               Luck compounds multiplicatively, not additively: each period's shock scales the entire outcome rather than being averaged out, so a single bad draw can reshape the final result.
             </div>
           </div>
@@ -392,15 +392,15 @@ const ErgodicitySandbox = () => {
         maxWidth: '1400px',
         margin: '0 auto',
         marginBottom: '2rem',
-        background: 'rgba(164, 178, 209, 0.05)',
-        borderLeft: '3px solid #a8b2d1',
+        background: '#f1f5f9',
+        borderLeft: '3px solid #cbd5e1',
         borderRadius: '0 8px 8px 0',
         padding: '1rem 1.25rem',
         fontSize: '0.875rem',
         lineHeight: '1.6',
-        color: '#a8b2d1'
+        color: '#64748b'
       }}>
-        <strong style={{ color: '#e8e6e3' }}>Ergodicity</strong> — a standard assumption in economics — holds when a single participant's long-run time average converges to the ensemble average across all participants. In ergodic systems, individual experience eventually mirrors the group. Multiplicative dynamics break this property: individual paths can diverge permanently from the group average, especially when irreversible "ruin" states are possible.
+        <strong style={{ color: '#1e293b' }}>Ergodicity</strong> — a standard assumption in economics — holds when a single participant's long-run time average converges to the ensemble average across all participants. In ergodic systems, individual experience eventually mirrors the group. Multiplicative dynamics break this property: individual paths can diverge permanently from the group average, especially when irreversible "ruin" states are possible.
       </div>
 
       {/* Controls */}
@@ -408,16 +408,16 @@ const ErgodicitySandbox = () => {
         maxWidth: '1400px',
         margin: '0 auto',
         marginBottom: '2rem',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(164, 178, 209, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '8px',
         padding: '1.5rem',
-        backdropFilter: 'blur(10px)'
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.5rem' }}>
           {/* Skill slider */}
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
               Skill (Expected Growth μ): {(skill * 100).toFixed(1)}%
             </label>
             <input
@@ -436,7 +436,7 @@ const ErgodicitySandbox = () => {
 
           {/* Luck variance slider */}
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
               Luck Variance (σ): {(luckVariance * 100).toFixed(0)}%
             </label>
             <input
@@ -455,7 +455,7 @@ const ErgodicitySandbox = () => {
 
           {/* Number of ventures */}
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
               Portfolio Size: {numVentures}
             </label>
             <input
@@ -482,7 +482,7 @@ const ErgodicitySandbox = () => {
                 background: 'linear-gradient(135deg, #f4a261 0%, #e76f51 100%)',
                 border: 'none',
                 borderRadius: '6px',
-                color: '#0a0e27',
+                color: '#ffffff',
                 fontWeight: '600',
                 fontSize: '0.875rem',
                 cursor: 'pointer',
@@ -510,23 +510,23 @@ const ErgodicitySandbox = () => {
       }}>
         {/* Combined Averages Chart */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(164, 178, 209, 0.1)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
           borderRadius: '8px',
           padding: '1.5rem',
-          backdropFilter: 'blur(10px)'
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}>
           <h3 style={{
             fontSize: '1.25rem',
             fontWeight: '500',
             marginBottom: '0.5rem',
-            color: '#e8e6e3'
+            color: '#1e293b'
           }}>
             Ensemble vs Time Average
           </h3>
           <p style={{
             fontSize: '0.875rem',
-            color: '#a8b2d1',
+            color: '#64748b',
             marginBottom: '1rem',
             lineHeight: '1.5'
           }}>
@@ -534,22 +534,23 @@ const ErgodicitySandbox = () => {
           </p>
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={combinedChartData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(164, 178, 209, 0.1)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis
                 dataKey="period"
-                label={{ value: 'Time Period', position: 'insideBottom', offset: -5, fill: '#a8b2d1' }}
-                stroke="#a8b2d1"
+                label={{ value: 'Time Period', position: 'insideBottom', offset: -5, fill: '#64748b' }}
+                stroke="#64748b"
               />
               <YAxis
-                label={{ value: 'Normalized Return', angle: -90, position: 'insideLeft', fill: '#a8b2d1' }}
-                stroke="#a8b2d1"
+                label={{ value: 'Normalized Return', angle: -90, position: 'insideLeft', fill: '#64748b' }}
+                stroke="#64748b"
               />
               <Tooltip
                 contentStyle={{
-                  background: 'rgba(10, 14, 39, 0.95)',
-                  border: '1px solid rgba(164, 178, 209, 0.2)',
+                  background: 'rgba(255, 255, 255, 0.97)',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '4px',
-                  color: '#e8e6e3'
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  color: '#1e293b'
                 }}
                 formatter={(value) => value.toFixed(2)}
               />
@@ -576,23 +577,23 @@ const ErgodicitySandbox = () => {
 
         {/* Distribution Chart */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(164, 178, 209, 0.1)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
           borderRadius: '8px',
           padding: '1.5rem',
-          backdropFilter: 'blur(10px)'
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}>
           <h3 style={{
             fontSize: '1.25rem',
             fontWeight: '500',
             marginBottom: '0.5rem',
-            color: '#e8e6e3'
+            color: '#1e293b'
           }}>
             Distribution of Final Outcomes
           </h3>
           <p style={{
             fontSize: '0.875rem',
-            color: '#a8b2d1',
+            color: '#64748b',
             marginBottom: '1rem',
             lineHeight: '1.5'
           }}>
@@ -600,28 +601,29 @@ const ErgodicitySandbox = () => {
           </p>
           <ResponsiveContainer width="100%" height={350}>
             <BarChart data={distributionData.bins} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(164, 178, 209, 0.1)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis
                 dataKey="label"
-                label={{ value: 'Final Value', position: 'insideBottom', offset: -5, fill: '#a8b2d1' }}
-                stroke="#a8b2d1"
+                label={{ value: 'Final Value', position: 'insideBottom', offset: -5, fill: '#64748b' }}
+                stroke="#64748b"
                 fontSize={11}
               />
               <YAxis
-                label={{ value: 'Count', angle: -90, position: 'insideLeft', fill: '#a8b2d1' }}
-                stroke="#a8b2d1"
+                label={{ value: 'Count', angle: -90, position: 'insideLeft', fill: '#64748b' }}
+                stroke="#64748b"
               />
               <Tooltip
                 contentStyle={{
-                  background: 'rgba(10, 14, 39, 0.95)',
-                  border: '1px solid rgba(164, 178, 209, 0.2)',
+                  background: 'rgba(255, 255, 255, 0.97)',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '4px',
-                  color: '#e8e6e3'
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  color: '#1e293b'
                 }}
                 formatter={(value) => [value, 'Ventures']}
                 labelFormatter={(label) => `Value: ${label}`}
               />
-              <Bar dataKey="count" fill="rgba(164, 178, 209, 0.3)" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="count" fill="#cbd5e1" radius={[2, 2, 0, 0]} />
               <ReferenceLine
                 x={distributionData.bins.findIndex(b => distributionData.median >= b.rangeStart && distributionData.median < b.rangeEnd) >= 0
                   ? distributionData.bins[distributionData.bins.findIndex(b => distributionData.median >= b.rangeStart && distributionData.median < b.rangeEnd)].label
@@ -650,17 +652,17 @@ const ErgodicitySandbox = () => {
         maxWidth: '1400px',
         margin: '0 auto',
         marginBottom: '2rem',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(164, 178, 209, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: '8px',
         padding: '1.5rem',
-        backdropFilter: 'blur(10px)'
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}>
         <h3 style={{
           fontSize: '1.25rem',
           fontWeight: '500',
           marginBottom: '1rem',
-          color: '#e8e6e3'
+          color: '#1e293b'
         }}>
           Why the Formulas Differ: The Mathematics
         </h3>
@@ -668,7 +670,7 @@ const ErgodicitySandbox = () => {
         <div style={{
           fontSize: '0.875rem',
           lineHeight: '1.8',
-          color: '#a8b2d1'
+          color: '#64748b'
         }}>
           <p style={{ marginBottom: '1rem' }}>
             Each venture experiences multiplicative growth: V<sub>t+1</sub> = V<sub>t</sub> × exp(μ + σZ), where Z ~ N(0,1) is random luck.
@@ -692,7 +694,7 @@ const ErgodicitySandbox = () => {
               <div style={{ fontFamily: "'Fira Code', monospace", fontSize: '0.85rem', marginBottom: '0.5rem' }}>
                 E[V<sub>t</sub>] = E[V<sub>0</sub> × exp(Σ(μ + σZ<sub>i</sub>))]
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#a8b2d1' }}>
+              <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
                 Taking expectations of the exponential:<br/>
                 E[exp(σZ)] = exp(σ²/2) when Z ~ N(0,1)<br/>
                 <br/>
@@ -722,7 +724,7 @@ const ErgodicitySandbox = () => {
               <div style={{ fontFamily: "'Fira Code', monospace", fontSize: '0.85rem', marginBottom: '0.5rem' }}>
                 Median[V<sub>t</sub>] = V<sub>0</sub> × exp(Σ(μ + σZ<sub>i</sub>))
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#a8b2d1' }}>
+              <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
                 For a single path, we compound the actual shocks:<br/>
                 Median[Σ σZ<sub>i</sub>] = 0 (symmetric distribution)<br/>
                 <br/>
@@ -765,17 +767,17 @@ const ErgodicitySandbox = () => {
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(164, 178, 209, 0.1)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
           borderRadius: '8px',
           padding: '1.5rem',
-          backdropFilter: 'blur(10px)'
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}>
           <h3 style={{
             fontSize: '1.25rem',
             fontWeight: '500',
             marginBottom: '1rem',
-            color: '#e8e6e3'
+            color: '#1e293b'
           }}>
             The Ergodicity Break: Why Temporal ≠ Spatial Diversification
           </h3>
@@ -830,19 +832,19 @@ const ErgodicitySandbox = () => {
           </div>
 
           <div style={{
-            background: 'rgba(164, 178, 209, 0.05)',
+            background: '#f1f5f9',
             borderLeft: '3px solid #4ecdc4',
             padding: '1rem',
             fontSize: '0.875rem',
             lineHeight: '1.6',
-            color: '#a8b2d1'
+            color: '#64748b'
           }}>
             <p style={{ marginBottom: '0.75rem' }}>
-              <strong style={{ color: '#e8e6e3' }}>Investors</strong> securitize luck <em>horizontally</em> across {numVentures} simultaneous bets. 
+              <strong style={{ color: '#1e293b' }}>Investors</strong> securitize luck <em>horizontally</em> across {numVentures} simultaneous bets. 
               Their portfolio average benefits from the <strong style={{ color: '#f4a261' }}>volatility boost (+σ²/2)</strong>, growing at {((skill + metrics.volatilityBoost) * 100).toFixed(1)}% per period.
             </p>
             <p style={{ marginBottom: '0.75rem' }}>
-              <strong style={{ color: '#e8e6e3' }}>Entrepreneurs</strong> can only diversify <em>temporally</em> through sequential attempts. 
+              <strong style={{ color: '#1e293b' }}>Entrepreneurs</strong> can only diversify <em>temporally</em> through sequential attempts. 
               The geometric mean (typical path) grows at the base rate: <strong style={{ color: '#4ecdc4' }}>{(skill * 100).toFixed(1)}% per period</strong>, missing the volatility boost.
             </p>
             <p style={{ margin: 0 }}>
@@ -866,11 +868,11 @@ const ErgodicitySandbox = () => {
             maxWidth: '1400px',
             margin: '0 auto',
             marginBottom: '2rem',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(164, 178, 209, 0.1)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '8px',
             padding: '1.5rem',
-            backdropFilter: 'blur(10px)'
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
           }}>
             <h3 style={{
               fontSize: '1.25rem',
@@ -882,7 +884,7 @@ const ErgodicitySandbox = () => {
             </h3>
             <p style={{
               fontSize: '0.875rem',
-              color: '#a8b2d1',
+              color: '#64748b',
               marginBottom: '1.5rem',
               lineHeight: '1.6'
             }}>
@@ -893,7 +895,7 @@ const ErgodicitySandbox = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: '1.5rem' }}>
               {/* Number of attempts */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
                   Serial Attempts: {numAttempts}
                 </label>
                 <input
@@ -915,7 +917,7 @@ const ErgodicitySandbox = () => {
 
               {/* Safety net */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
                   Safety Net (Max Loss): {(safetyNet * 100).toFixed(0)}%
                 </label>
                 <input
@@ -937,7 +939,7 @@ const ErgodicitySandbox = () => {
 
               {/* Luck variance (repeated for convenience) */}
               <div>
-                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#a8b2d1', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: '#64748b', fontWeight: '500' }}>
                   Societal Risk Appetite (σ): {(luckVariance * 100).toFixed(0)}%
                 </label>
                 <input
@@ -967,7 +969,7 @@ const ErgodicitySandbox = () => {
                     background: 'linear-gradient(135deg, #4ecdc4 0%, #48a9a6 100%)',
                     border: 'none',
                     borderRadius: '6px',
-                    color: '#0a0e27',
+                    color: '#ffffff',
                     fontWeight: '600',
                     fontSize: '0.875rem',
                     cursor: 'pointer',
@@ -990,11 +992,11 @@ const ErgodicitySandbox = () => {
               maxWidth: '1400px',
               margin: '0 auto',
               marginBottom: '2rem',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(164, 178, 209, 0.1)',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
               borderRadius: '8px',
               padding: '1.5rem',
-              backdropFilter: 'blur(10px)'
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
             }}>
               <h3 style={{
                 fontSize: '1.25rem',
@@ -1081,15 +1083,15 @@ const ErgodicitySandbox = () => {
               </div>
 
               <div style={{
-                background: 'rgba(164, 178, 209, 0.05)',
+                background: '#f1f5f9',
                 borderLeft: '3px solid #4ecdc4',
                 padding: '1rem',
                 fontSize: '0.875rem',
                 lineHeight: '1.6',
-                color: '#a8b2d1'
+                color: '#64748b'
               }}>
                 <p style={{ marginBottom: '0.75rem' }}>
-                  <strong style={{ color: '#e8e6e3' }}>With {numAttempts} attempt(s)</strong> {safetyNet > 0 && `and ${(safetyNet * 100).toFixed(0)}% safety net`}:
+                  <strong style={{ color: '#1e293b' }}>With {numAttempts} attempt(s)</strong> {safetyNet > 0 && `and ${(safetyNet * 100).toFixed(0)}% safety net`}:
                 </p>
                 <p style={{ marginBottom: '0.75rem' }}>
                   The median entrepreneur achieves {serialData.median.toFixed(2)}× return (vs single-attempt median of ~{Math.exp(skill * numPeriods).toFixed(2)}×).
@@ -1108,11 +1110,11 @@ const ErgodicitySandbox = () => {
           <div style={{
             maxWidth: '1400px',
             margin: '0 auto',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(164, 178, 209, 0.1)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '8px',
             padding: '1.5rem',
-            backdropFilter: 'blur(10px)'
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
           }}>
             <h3 style={{
               fontSize: '1.25rem',
@@ -1127,7 +1129,7 @@ const ErgodicitySandbox = () => {
               <div style={{
                 fontSize: '0.875rem',
                 lineHeight: '1.8',
-                color: '#a8b2d1'
+                color: '#64748b'
               }}>
                 <div style={{
                   display: 'grid',
@@ -1195,7 +1197,7 @@ const ErgodicitySandbox = () => {
                 </div>
 
                 <div style={{
-                  background: 'rgba(164, 178, 209, 0.05)',
+                  background: '#f1f5f9',
                   borderLeft: '3px solid #4ecdc4',
                   padding: '1rem'
                 }}>
@@ -1231,10 +1233,10 @@ const ErgodicitySandbox = () => {
           style={{
             width: '100%',
             padding: '0.75rem 1rem',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(164, 178, 209, 0.1)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: sourcesOpen ? '8px 8px 0 0' : '8px',
-            color: '#a8b2d1',
+            color: '#64748b',
             fontSize: '0.875rem',
             fontWeight: '500',
             cursor: 'pointer',
@@ -1250,13 +1252,13 @@ const ErgodicitySandbox = () => {
         {sourcesOpen && (
           <div style={{
             padding: '1rem 1.25rem',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(164, 178, 209, 0.1)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderTop: 'none',
             borderRadius: '0 0 8px 8px',
             fontSize: '0.8rem',
             lineHeight: '1.8',
-            color: '#a8b2d1'
+            color: '#64748b'
           }}>
             <p style={{ marginBottom: '0.5rem' }}>
               Peters, O. (2019). The ergodicity problem in economics. <em>Nature Physics</em>, 15, 1216–1221. <a href="https://doi.org/10.1038/s41567-019-0732-0" target="_blank" rel="noopener noreferrer" style={{ color: '#4ecdc4' }}>https://doi.org/10.1038/s41567-019-0732-0</a>

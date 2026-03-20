@@ -6,6 +6,8 @@
 
 body {
   font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
 }
 
 /* Prevent horizontal overflow */

@@ -74,10 +74,10 @@ function Slider({ label, sub, value, min, max, step, onChange, fmt }) {
     <div style={{ marginBottom: 18 }}>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom: 5 }}>
         <div>
-          <span style={{ fontSize:13, fontWeight:600, color:"#e2e8f0", letterSpacing:"0.01em" }}>{label}</span>
+          <span style={{ fontSize:13, fontWeight:600, color:"#1e293b", letterSpacing:"0.01em" }}>{label}</span>
           {sub && <span style={{ fontSize:11, color:"#64748b", marginLeft:6 }}>{sub}</span>}
         </div>
-        <span style={{ fontSize:13, fontFamily:"'Courier New', monospace", color:"#94a3b8", fontWeight:700 }}>
+        <span style={{ fontSize:13, fontFamily:"'Courier New', monospace", color:"#64748b", fontWeight:700 }}>
           {fmt ? fmt(value) : value.toFixed(2)}
         </span>
       </div>
@@ -94,12 +94,12 @@ function Slider({ label, sub, value, min, max, step, onChange, fmt }) {
 function MetricCard({ label, value, sub, color, emphasis }) {
   return (
     <div style={{
-      background: emphasis ? "rgba(245,158,11,0.08)" : "rgba(255,255,255,0.03)",
-      border: `1px solid ${emphasis ? "rgba(245,158,11,0.3)" : "rgba(255,255,255,0.07)"}`,
+      background: emphasis ? "rgba(245,158,11,0.08)" : "#ffffff",
+      border: `1px solid ${emphasis ? "rgba(245,158,11,0.3)" : "#e2e8f0"}`,
       borderRadius: 8, padding:"14px 16px", flex:1
     }}>
       <div style={{ fontSize:11, color:"#64748b", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>{label}</div>
-      <div style={{ fontSize:28, fontWeight:800, color: color || "#f1f5f9", fontFamily:"'Courier New', monospace", lineHeight:1 }}>
+      <div style={{ fontSize:28, fontWeight:800, color: color || "#1e293b", fontFamily:"'Courier New', monospace", lineHeight:1 }}>
         {value}
       </div>
       {sub && <div style={{ fontSize:11, color:"#475569", marginTop:5, lineHeight:1.4 }}>{sub}</div>}
@@ -149,9 +149,9 @@ export default function App() {
   return (
     <div className="belief-root" style={{
       fontFamily: "'Georgia', serif",
-      background: "#0f172a",
+      background: "#f8fafc",
       minHeight: "100vh",
-      color: "#e2e8f0",
+      color: "#1e293b",
       padding: "28px 24px",
     }}>
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
@@ -161,7 +161,7 @@ export default function App() {
           <div style={{ fontSize:11, color:"#f59e0b", textTransform:"uppercase", letterSpacing:"0.12em", marginBottom:6 }}>
             Stochastic simulation · {N_STATS.toLocaleString()} simulated beliefs
           </div>
-          <h1 style={{ fontSize:22, fontWeight:700, color:"#f1f5f9", margin:"0 0 6px", letterSpacing:"-0.02em" }}>
+          <h1 style={{ fontSize:22, fontWeight:700, color:"#1e293b", margin:"0 0 6px", letterSpacing:"-0.02em" }}>
             Temporal Dynamics of Entrepreneurial Belief Validation
           </h1>
           <p style={{ fontSize:13, color:"#64748b", margin:0, maxWidth:720, lineHeight:1.6 }}>
@@ -199,12 +199,12 @@ export default function App() {
 
           {/* ── Scatter plot ── */}
           <div style={{
-            background:"rgba(255,255,255,0.03)",
-            border:"1px solid rgba(255,255,255,0.07)",
+            background:"#ffffff",
+            border:"1px solid #e2e8f0",
             borderRadius:10, padding:"18px 16px"
           }}>
             <div style={{ marginBottom:12 }}>
-              <div style={{ fontSize:13, fontWeight:600, color:"#cbd5e1", marginBottom:3 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:"#475569", marginBottom:3 }}>
                 Belief Space: V(F) × V(M)₁
               </div>
               <div style={{ fontSize:11, color:"#475569", lineHeight:1.5 }}>
@@ -215,7 +215,7 @@ export default function App() {
 
             <ResponsiveContainer width="100%" height={300}>
               <ScatterChart margin={{ top:8, right:8, bottom:20, left:8 }}>
-                <CartesianGrid strokeDasharray="2 4" stroke="rgba(255,255,255,0.04)" />
+                <CartesianGrid strokeDasharray="2 4" stroke="#e2e8f0" />
                 <XAxis
                   dataKey="x" type="number"
                   domain={[-CLIP, CLIP]}
@@ -233,7 +233,7 @@ export default function App() {
 
                 {/* Quadrant labels */}
                 <ReferenceLine x={0} y={0} stroke="none" label={
-                  { value:"I", position:"insideTopRight", offset:6, fontSize:11, fill:"rgba(255,255,255,0.2)", fontWeight:700 }
+                  { value:"I", position:"insideTopRight", offset:6, fontSize:11, fill:"rgba(0,0,0,0.15)", fontWeight:700 }
                 } />
 
                 {scatterByZone.map(({ zone, data }) => (
@@ -261,12 +261,12 @@ export default function App() {
 
           {/* ── Bar chart ── */}
           <div style={{
-            background:"rgba(255,255,255,0.03)",
-            border:"1px solid rgba(255,255,255,0.07)",
+            background:"#ffffff",
+            border:"1px solid #e2e8f0",
             borderRadius:10, padding:"18px 16px"
           }}>
             <div style={{ marginBottom:12 }}>
-              <div style={{ fontSize:13, fontWeight:600, color:"#cbd5e1", marginBottom:3 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:"#475569", marginBottom:3 }}>
                 Zone Decomposition
               </div>
               <div style={{ fontSize:11, color:"#475569" }}>
@@ -279,17 +279,17 @@ export default function App() {
                 <XAxis type="number" domain={[0,50]} tick={{ fontSize:10, fill:"#475569" }} unit="%" />
                 <YAxis
                   type="category" dataKey="name" width={76}
-                  tick={{ fontSize:10, fill:"#94a3b8", fontFamily:"'Courier New', monospace" }}
+                  tick={{ fontSize:10, fill:"#64748b", fontFamily:"'Courier New', monospace" }}
                 />
                 <Tooltip
-                  cursor={{ fill:"rgba(255,255,255,0.04)" }}
-                  contentStyle={{ background:"#1e293b", border:"1px solid #334155", borderRadius:6, fontSize:11 }}
+                  cursor={{ fill:"rgba(0,0,0,0.04)" }}
+                  contentStyle={{ background:"#ffffff", border:"1px solid #e2e8f0", borderRadius:6, fontSize:11, color:"#1e293b" }}
                   formatter={(v, _, props) => [`${v}% — ${props.payload.label}`, ""]}
                   labelFormatter={() => ""}
                 />
                 <Bar dataKey="value" radius={[0,4,4,0]} isAnimationActive={false}>
                   {barData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                  <LabelList dataKey="value" position="right" style={{ fontSize:10, fill:"#94a3b8", fontFamily:"monospace" }} formatter={v => v + "%"} />
+                  <LabelList dataKey="value" position="right" style={{ fontSize:10, fill:"#64748b", fontFamily:"monospace" }} formatter={v => v + "%"} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -301,7 +301,7 @@ export default function App() {
                 { label:"Noise error", value:noiseTotal, color:"#dc2626" },
                 { label:"Drift error", value:driftTotal, color:"#f59e0b" },
               ].map(g => (
-                <div key={g.label} style={{ textAlign:"center", padding:"8px 4px", background:"rgba(255,255,255,0.03)", borderRadius:6, border:`1px solid ${g.color}30` }}>
+                <div key={g.label} style={{ textAlign:"center", padding:"8px 4px", background:"#f8fafc", borderRadius:6, border:`1px solid ${g.color}30` }}>
                   <div style={{ fontSize:18, fontWeight:800, color:g.color, fontFamily:"monospace" }}>{g.value.toFixed(1)}%</div>
                   <div style={{ fontSize:10, color:"#475569", marginTop:2 }}>{g.label}</div>
                 </div>
@@ -311,11 +311,11 @@ export default function App() {
 
           {/* ── Controls ── */}
           <div style={{
-            background:"rgba(255,255,255,0.03)",
-            border:"1px solid rgba(255,255,255,0.07)",
+            background:"#ffffff",
+            border:"1px solid #e2e8f0",
             borderRadius:10, padding:"18px 16px"
           }}>
-            <div style={{ fontSize:13, fontWeight:600, color:"#cbd5e1", marginBottom:18 }}>Parameters</div>
+            <div style={{ fontSize:13, fontWeight:600, color:"#475569", marginBottom:18 }}>Parameters</div>
 
             {/* Experimental quality */}
             <div style={{ marginBottom:20 }}>
@@ -360,7 +360,7 @@ export default function App() {
 
             {/* Model spec */}
             <div style={{
-              background:"rgba(0,0,0,0.3)", borderRadius:6,
+              background:"#f1f5f9", borderRadius:6,
               padding:12, fontSize:11, lineHeight:1.8, color:"#475569",
               fontFamily:"'Courier New', monospace"
             }}>
@@ -386,7 +386,7 @@ export default function App() {
             <div style={{ fontSize:11, color:"#f59e0b", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>
               The Experimental Floor
             </div>
-            <p style={{ fontSize:12, color:"#94a3b8", margin:0, lineHeight:1.7 }}>
+            <p style={{ fontSize:12, color:"#64748b", margin:0, lineHeight:1.7 }}>
               Even with <em>perfect</em> feedback (σ<sub>f</sub> → 0), market drift alone generates{" "}
               <strong style={{ color:"#f59e0b" }}>{driftTotal.toFixed(1)}%</strong> residual error across Areas 1–4.
               This floor cannot be reduced by better experiments — it is structural.
@@ -396,7 +396,7 @@ export default function App() {
             <div style={{ fontSize:11, color:"#dc2626", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>
               What Experiments Can Fix
             </div>
-            <p style={{ fontSize:12, color:"#94a3b8", margin:0, lineHeight:1.7 }}>
+            <p style={{ fontSize:12, color:"#64748b", margin:0, lineHeight:1.7 }}>
               Reducing σ<sub>f</sub> moves mass from noise zones (Q2s + Q3s ={" "}
               <strong style={{ color:"#dc2626" }}>{noiseTotal.toFixed(1)}%</strong>) toward correct zones.
               These are errors of commission and omission amenable to the scientists view.
@@ -406,9 +406,9 @@ export default function App() {
             <div style={{ fontSize:11, color:"#2563eb", textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:6 }}>
               The Irreducibility Argument
             </div>
-            <p style={{ fontSize:12, color:"#94a3b8", margin:0, lineHeight:1.7 }}>
+            <p style={{ fontSize:12, color:"#64748b", margin:0, lineHeight:1.7 }}>
               Total correct + fixable error ={" "}
-              <strong style={{ color:"#f1f5f9" }}>{(correctTotal + noiseTotal).toFixed(1)}%</strong>.
+              <strong style={{ color:"#1e293b" }}>{(correctTotal + noiseTotal).toFixed(1)}%</strong>.
               Drift error (<strong style={{ color:"#f59e0b" }}>{driftTotal.toFixed(1)}%</strong>) persists regardless
               of experimental discipline — it grows with σ<sub>m</sub> and Δt alone.
             </p>
@@ -420,14 +420,14 @@ export default function App() {
           <button
             onClick={() => setShowRef(!showRef)}
             style={{
-              background:"rgba(255,255,255,0.03)",
-              border:"1px solid rgba(255,255,255,0.07)",
+              background:"#ffffff",
+              border:"1px solid #e2e8f0",
               borderRadius:showRef ? "10px 10px 0 0" : 10,
               padding:"12px 20px",
               width:"100%",
               cursor:"pointer",
               display:"flex", justifyContent:"space-between", alignItems:"center",
-              color:"#cbd5e1", fontSize:13, fontWeight:600,
+              color:"#475569", fontSize:13, fontWeight:600,
               fontFamily:"'Georgia', serif",
             }}
           >
@@ -439,15 +439,15 @@ export default function App() {
 
           {showRef && (
             <div style={{
-              background:"rgba(255,255,255,0.03)",
-              border:"1px solid rgba(255,255,255,0.07)",
+              background:"#ffffff",
+              border:"1px solid #e2e8f0",
               borderTop:"none",
               borderRadius:"0 0 10px 10px",
               padding:"20px 24px",
             }}>
               {/* Static world table */}
               <div style={{ marginBottom:24 }}>
-                <div style={{ fontSize:12, fontWeight:600, color:"#cbd5e1", marginBottom:4 }}>
+                <div style={{ fontSize:12, fontWeight:600, color:"#475569", marginBottom:4 }}>
                   Original Quadrants — Static World (t₀ only)
                 </div>
                 <p style={{ fontSize:11, color:"#64748b", margin:"0 0 12px", lineHeight:1.5 }}>
@@ -455,9 +455,9 @@ export default function App() {
                 </p>
                 <table className="zone-ref-table" style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
                   <thead>
-                    <tr style={{ borderBottom:"1px solid rgba(255,255,255,0.1)" }}>
+                    <tr style={{ borderBottom:"1px solid #e2e8f0" }}>
                       {["Zone","Feedback V(F)","Market at t₀ V(M)₀","Outcome","Label"].map(h => (
-                        <th key={h} style={{ padding:"8px 10px", textAlign:"left", color:"#94a3b8", fontWeight:600, fontSize:10, textTransform:"uppercase", letterSpacing:"0.05em" }}>{h}</th>
+                        <th key={h} style={{ padding:"8px 10px", textAlign:"left", color:"#64748b", fontWeight:600, fontSize:10, textTransform:"uppercase", letterSpacing:"0.05em" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -468,12 +468,12 @@ export default function App() {
                       { zone:"Q3", color:"#7c3aed", feedback:"Negative → abandon", market:"Would succeed", outcome:"False negative (Type II error)", label:"Missed opportunity" },
                       { zone:"Q4", color:"#475569", feedback:"Negative → abandon", market:"Would fail", outcome:"Success II (abandoning bad ideas)", label:"Avoided failure" },
                     ].map(r => (
-                      <tr key={r.zone} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                      <tr key={r.zone} style={{ borderBottom:"1px solid #f1f5f9" }}>
                         <td style={{ padding:"8px 10px", fontWeight:700, color:r.color, fontFamily:"'Courier New', monospace" }}>{r.zone}</td>
-                        <td style={{ padding:"8px 10px", color:"#94a3b8" }}>{r.feedback}</td>
-                        <td style={{ padding:"8px 10px", color:"#94a3b8" }}>{r.market}</td>
-                        <td style={{ padding:"8px 10px", color:"#94a3b8" }}>{r.outcome}</td>
-                        <td style={{ padding:"8px 10px", color:"#e2e8f0" }}>{r.label}</td>
+                        <td style={{ padding:"8px 10px", color:"#64748b" }}>{r.feedback}</td>
+                        <td style={{ padding:"8px 10px", color:"#64748b" }}>{r.market}</td>
+                        <td style={{ padding:"8px 10px", color:"#64748b" }}>{r.outcome}</td>
+                        <td style={{ padding:"8px 10px", color:"#1e293b" }}>{r.label}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -482,7 +482,7 @@ export default function App() {
 
               {/* Dynamic world table */}
               <div>
-                <div style={{ fontSize:12, fontWeight:600, color:"#cbd5e1", marginBottom:4 }}>
+                <div style={{ fontSize:12, fontWeight:600, color:"#475569", marginBottom:4 }}>
                   Drift-Induced Areas — Dynamic World (t₁ ≠ t₀)
                 </div>
                 <p style={{ fontSize:11, color:"#64748b", margin:"0 0 12px", lineHeight:1.5 }}>
@@ -490,9 +490,9 @@ export default function App() {
                 </p>
                 <table className="zone-ref-table" style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
                   <thead>
-                    <tr style={{ borderBottom:"1px solid rgba(255,255,255,0.1)" }}>
+                    <tr style={{ borderBottom:"1px solid #e2e8f0" }}>
                       {["Area","Parent","What happened","Epistemic status"].map(h => (
-                        <th key={h} style={{ padding:"8px 10px", textAlign:"left", color:"#94a3b8", fontWeight:600, fontSize:10, textTransform:"uppercase", letterSpacing:"0.05em" }}>{h}</th>
+                        <th key={h} style={{ padding:"8px 10px", textAlign:"left", color:"#64748b", fontWeight:600, fontSize:10, textTransform:"uppercase", letterSpacing:"0.05em" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -503,11 +503,11 @@ export default function App() {
                       { area:"A3", color:"#b45309", parent:"Q3", what:"Feedback negative, would have succeeded at t₀ — market shifted against it by t₁", status:"Justified abandonment, but moot" },
                       { area:"A4", color:"#0891b2", parent:"Q4", what:"Feedback negative, would have failed at t₀ — market shifted in its favour by t₁", status:"Unjustified pursuit would have succeeded" },
                     ].map(r => (
-                      <tr key={r.area} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                      <tr key={r.area} style={{ borderBottom:"1px solid #f1f5f9" }}>
                         <td style={{ padding:"8px 10px", fontWeight:700, color:r.color, fontFamily:"'Courier New', monospace" }}>{r.area}</td>
-                        <td style={{ padding:"8px 10px", color:"#94a3b8", fontFamily:"'Courier New', monospace" }}>{r.parent}</td>
-                        <td style={{ padding:"8px 10px", color:"#94a3b8", lineHeight:1.5 }}>{r.what}</td>
-                        <td style={{ padding:"8px 10px", color:"#e2e8f0", fontStyle:"italic", lineHeight:1.5 }}>{r.status}</td>
+                        <td style={{ padding:"8px 10px", color:"#64748b", fontFamily:"'Courier New', monospace" }}>{r.parent}</td>
+                        <td style={{ padding:"8px 10px", color:"#64748b", lineHeight:1.5 }}>{r.what}</td>
+                        <td style={{ padding:"8px 10px", color:"#1e293b", fontStyle:"italic", lineHeight:1.5 }}>{r.status}</td>
                       </tr>
                     ))}
                   </tbody>
