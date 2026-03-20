@@ -67,15 +67,15 @@ const LOW_THRESH  = 0.4;
 const HIGH_THRESH = 0.6;
 
 function dynamicStatus(capA, capB) {
-  if (capA >= HIGH_THRESH && capB >= HIGH_THRESH) return "developed";
-  if (capA < LOW_THRESH && capB < LOW_THRESH)     return "dysfunctional";
-  return "developing";
+  if (capA >= HIGH_THRESH && capB >= HIGH_THRESH) return "generative";
+  if (capA < LOW_THRESH && capB < LOW_THRESH)     return "nascent";
+  return "emerging";
 }
 
 const STATUS_META = {
-  developed:     { label: "Developed",     color: "#16a34a", bg: "rgba(22,163,74,0.10)",  border: "rgba(22,163,74,0.35)" },
-  developing:    { label: "Developing",    color: "#ca8a04", bg: "rgba(202,138,4,0.10)",  border: "rgba(202,138,4,0.35)" },
-  dysfunctional: { label: "Dysfunctional", color: "#dc2626", bg: "rgba(220,38,38,0.10)",  border: "rgba(220,38,38,0.35)" },
+  generative: { label: "Generative", color: "#16a34a", bg: "rgba(22,163,74,0.10)",  border: "rgba(22,163,74,0.35)" },
+  emerging:   { label: "Emerging",   color: "#ca8a04", bg: "rgba(202,138,4,0.10)",  border: "rgba(202,138,4,0.35)" },
+  nascent:    { label: "Nascent",    color: "#dc2626", bg: "rgba(220,38,38,0.10)",  border: "rgba(220,38,38,0.35)" },
 };
 
 // ── Components ──────────────────────────────────────────────────────────────
@@ -153,7 +153,7 @@ function DynamicCard({ dynamic, caps, expanded, onToggle }) {
         <div style={{ marginTop: 8, fontSize: 13, lineHeight: 1.55, color: "#475569" }}>
           <p style={{ marginBottom: 6 }}>{dynamic.desc}</p>
           <p style={{ color: meta.color, fontStyle: "italic" }}>
-            {status === "developed" ? dynamic.whenStrong : dynamic.whenWeak}
+            {status === "generative" ? dynamic.whenStrong : dynamic.whenWeak}
           </p>
         </div>
       )}
@@ -274,7 +274,7 @@ export default function App() {
   }, []);
 
   const statusCounts = useMemo(() => {
-    const counts = { developed: 0, developing: 0, dysfunctional: 0 };
+    const counts = { generative: 0, emerging: 0, nascent: 0 };
     DYNAMICS.forEach(d => { counts[dynamicStatus(caps[d.caps[0]], caps[d.caps[1]])]++; });
     return counts;
   }, [caps]);
@@ -299,9 +299,9 @@ export default function App() {
         <p style={{ fontSize: 14, color: "#64748b", maxWidth: 700, marginBottom: 24, lineHeight: 1.5 }}>
           Set initial capacity levels, then practice to enhance them.
           The six dynamics emerge from the interaction between capacity pairs —
-          shifting from <span style={{ color: "#dc2626", fontWeight: 600 }}>dysfunctional</span> to{" "}
-          <span style={{ color: "#ca8a04", fontWeight: 600 }}>developing</span> to{" "}
-          <span style={{ color: "#16a34a", fontWeight: 600 }}>developed</span> as capacities grow.
+          shifting from <span style={{ color: "#dc2626", fontWeight: 600 }}>nascent</span> to{" "}
+          <span style={{ color: "#ca8a04", fontWeight: 600 }}>emerging</span> to{" "}
+          <span style={{ color: "#16a34a", fontWeight: 600 }}>generative</span> as capacities grow.
         </p>
       </div>
 
@@ -451,10 +451,10 @@ export default function App() {
             </h3>
             <p style={{ fontSize: 13, color: "#475569", lineHeight: 1.6 }}>
               Each <strong>dynamic</strong> captures the interaction between a specific pair of <strong>capacities</strong>.
-              When both capacities in a pair are low, the dynamic is <em>dysfunctional</em> — the family system struggles.
-              When one capacity is developed but its partner lags, the dynamic is <em>developing</em> — there is
-              potential but imbalance. When both capacities are strong, the dynamic becomes fully <em>developed</em>,
-              enabling generative renewal. Practices target individual capacities, but their effects ripple
+              When both capacities in a pair are low, the dynamic is <em>nascent</em> — the family system struggles.
+              When one capacity is developed but its partner lags, the dynamic is <em>emerging</em> — there is
+              potential but imbalance. When both capacities are strong, the dynamic becomes fully <em>generative</em>,
+              enabling renewal. Practices target individual capacities, but their effects ripple
               through all dynamics that depend on them.
             </p>
           </div>
