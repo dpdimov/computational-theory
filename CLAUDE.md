@@ -4,7 +4,7 @@ Interactive web-based tools for computational entrepreneurship theory. Deployed 
 
 ## Project Structure
 
-- `packages/*/` — Vite + React source code (3 tools)
+- `packages/*/` — Vite + React source code (5 tools)
 - `static/*/` — Static HTML tools (2 tools: venture-underground, venturing-function)
 - `{tool-name}/` (root level) — **Built output** served by Vercel (do NOT edit directly)
 - `shared.css` — Shared CSS variables and navigation styles
@@ -30,6 +30,8 @@ Preview locally: `npm run dev:{tool-name}` (e.g., `npm run dev:theory-canvas`)
 | Theory Canvas | `@computational-theory/theory-canvas` | `npm run dev:theory-canvas` |
 | Well-being Simulator | `@computational-theory/well-being` | `npm run dev:well-being` |
 | Ergodicity Explorer | `@computational-theory/ergodicity-explorer` | `npm run dev:ergodicity-explorer` |
+| Belief Validation | `@computational-theory/belief-validation` | `npm run dev:belief-validation` |
+| Generative Renewal | `@computational-theory/generative-renewal` | `npm run dev:generative-renewal` |
 
 ## Static Tools
 
@@ -50,7 +52,7 @@ Preview locally: `npm run dev:{tool-name}` (e.g., `npm run dev:theory-canvas`)
 
 Every tool page has a `<nav class="site-nav">` linking to all tools. When adding or removing a tool, update navigation in:
 - `index.html` (home page — add a tool card)
-- 3 Vite tools: `packages/*/index.html`
+- 5 Vite tools: `packages/*/index.html`
 - Static tools have their own styling and do not include the shared nav
 
 ## Gotchas
