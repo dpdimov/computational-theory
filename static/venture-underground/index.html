@@ -1076,6 +1076,8 @@
                 <li><a href="./" class="active">Venture Emergence</a></li>
                 <li><a href="../venturing-function/">Venturing Function</a></li>
                 <li><a href="../ergodicity-explorer/">Ergodicity Explorer</a></li>
+                <li><a href="../belief-validation/">Belief Validation</a></li>
+                <li><a href="../generative-renewal/">Generative Renewal</a></li>
             </ul>
         </div>
     </nav>
@@ -1786,7 +1788,7 @@
             ctx.clearRect(0, 0, w, h);
             
             // Grid
-            ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+            ctx.strokeStyle = 'rgba(0,0,0,0.12)';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 10; i++) {
                 const y = pad.t + (i / 10) * ch;
@@ -1802,8 +1804,8 @@
             ctx.setLineDash([]);
             
             // Axes
-            ctx.fillStyle = '#94a3b8';
-            ctx.font = '7px IBM Plex Mono';
+            ctx.fillStyle = '#64748b';
+            ctx.font = '9px IBM Plex Mono';
             ctx.textAlign = 'right';
             ctx.fillText('1', pad.l - 3, pad.t + 3);
             ctx.fillText('0', pad.l - 3, pad.t + ch + 3);
