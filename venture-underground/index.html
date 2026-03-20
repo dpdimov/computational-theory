@@ -1782,35 +1782,64 @@
             ctx.scale(dpr, dpr);
             
             const w = rect.width, h = rect.height;
-            const pad = { l: 28, r: 10, t: 10, b: 18 };
+            const pad = { l: 44, r: 10, t: 14, b: 32 };
             const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
-            
+
             ctx.clearRect(0, 0, w, h);
-            
+
             // Grid
-            ctx.strokeStyle = 'rgba(0,0,0,0.12)';
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+            ctx.lineWidth = 0.5;
             for (let i = 0; i <= 10; i++) {
                 const y = pad.t + (i / 10) * ch;
                 ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke();
             }
-            
+
             // Thresholds
             ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 1;
             ctx.strokeStyle = 'rgba(22, 163, 74, 0.4)';
             ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.emergeThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.emergeThresh) * ch); ctx.stroke();
             ctx.strokeStyle = 'rgba(220, 38, 38, 0.4)';
             ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.exitThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.exitThresh) * ch); ctx.stroke();
             ctx.setLineDash([]);
-            
-            // Axes
+
+            // Axis lines
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + ch); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad.l, pad.t + ch); ctx.lineTo(w - pad.r, pad.t + ch); ctx.stroke();
+
+            // Y-axis tick labels
             ctx.fillStyle = '#64748b';
             ctx.font = '9px IBM Plex Mono';
             ctx.textAlign = 'right';
-            ctx.fillText('1', pad.l - 3, pad.t + 3);
-            ctx.fillText('0', pad.l - 3, pad.t + ch + 3);
-            
+            for (let i = 0; i <= 5; i++) {
+                const val = 1 - i * 0.2;
+                const y = pad.t + (i / 5) * ch;
+                ctx.fillText(val.toFixed(1), pad.l - 5, y + 3);
+            }
+
+            // X-axis tick labels
             const maxP = Math.max(state.period, 10);
+            ctx.textAlign = 'center';
+            const xTicks = Math.min(5, maxP);
+            for (let i = 0; i <= xTicks; i++) {
+                const val = Math.round(maxP * i / xTicks);
+                const x = pad.l + (val / maxP) * cw;
+                ctx.fillText(val, x, pad.t + ch + 14);
+            }
+
+            // Axis titles
+            ctx.fillStyle = '#475569';
+            ctx.font = '10px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Period', pad.l + cw / 2, h - 4);
+            ctx.save();
+            ctx.translate(12, pad.t + ch / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Conviction', 0, 0);
+            ctx.restore();
             const xs = cw / maxP;
             
             state.entrepreneurs.forEach(ent => {
