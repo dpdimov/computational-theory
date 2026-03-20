@@ -18,22 +18,22 @@
         }
 
         :root {
-            --bg-deep: #0d1117;
-            --bg-surface: #161b22;
-            --bg-elevated: #21262d;
-            --bg-overlay: #30363d;
-            --border-default: #30363d;
-            --border-muted: #21262d;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --text-muted: #6e7681;
-            --accent-blue: #58a6ff;
-            --accent-green: #3fb950;
-            --accent-red: #f85149;
-            --accent-orange: #d29922;
-            --accent-purple: #a371f7;
-            --accent-cyan: #39c5cf;
-            --accent-pink: #db61a2;
+            --bg-deep: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-elevated: #f1f5f9;
+            --bg-overlay: #e2e8f0;
+            --border-default: #e2e8f0;
+            --border-muted: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-green: #16a34a;
+            --accent-red: #dc2626;
+            --accent-orange: #d97706;
+            --accent-purple: #7c3aed;
+            --accent-cyan: #0891b2;
+            --accent-pink: #db2777;
         }
         
         body {
@@ -162,7 +162,7 @@
             color: white;
         }
         
-        .btn-primary:hover { background: #34a446; }
+        .btn-primary:hover { background: #15803d; }
         
         /* Main Layout */
         .main-layout {
@@ -342,12 +342,12 @@
         
         .threshold-emerge {
             color: var(--accent-green);
-            background: rgba(63, 185, 80, 0.2);
+            background: rgba(22, 163, 74, 0.12);
         }
-        
+
         .threshold-exit {
             color: var(--accent-red);
-            background: rgba(248, 81, 73, 0.2);
+            background: rgba(220, 38, 38, 0.12);
         }
         
         .chart-legend {
@@ -530,10 +530,10 @@
             font-weight: 500;
         }
         
-        .inspector-status.pursuing { background: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
-        .inspector-status.emerged { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
-        .inspector-status.exited { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
-        .inspector-status.stalled { background: rgba(210, 153, 34, 0.15); color: var(--accent-orange); }
+        .inspector-status.pursuing { background: rgba(37, 99, 235, 0.1); color: var(--accent-blue); }
+        .inspector-status.emerged { background: rgba(22, 163, 74, 0.1); color: var(--accent-green); }
+        .inspector-status.exited { background: rgba(220, 38, 38, 0.1); color: var(--accent-red); }
+        .inspector-status.stalled { background: rgba(217, 119, 6, 0.1); color: var(--accent-orange); }
         
         .close-btn {
             background: none;
@@ -628,7 +628,7 @@
         }
         
         .dim-badge.new {
-            background: rgba(210, 153, 34, 0.2);
+            background: rgba(217, 119, 6, 0.1);
             border: 1px solid var(--accent-orange);
         }
         
@@ -1786,7 +1786,7 @@
             ctx.clearRect(0, 0, w, h);
             
             // Grid
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.strokeStyle = 'rgba(0,0,0,0.06)';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 10; i++) {
                 const y = pad.t + (i / 10) * ch;
@@ -1795,14 +1795,14 @@
             
             // Thresholds
             ctx.setLineDash([3, 3]);
-            ctx.strokeStyle = 'rgba(63, 185, 80, 0.4)';
+            ctx.strokeStyle = 'rgba(22, 163, 74, 0.4)';
             ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.emergeThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.emergeThresh) * ch); ctx.stroke();
-            ctx.strokeStyle = 'rgba(248, 81, 73, 0.4)';
+            ctx.strokeStyle = 'rgba(220, 38, 38, 0.4)';
             ctx.beginPath(); ctx.moveTo(pad.l, pad.t + (1 - params.exitThresh) * ch); ctx.lineTo(w - pad.r, pad.t + (1 - params.exitThresh) * ch); ctx.stroke();
             ctx.setLineDash([]);
             
             // Axes
-            ctx.fillStyle = '#6e7681';
+            ctx.fillStyle = '#94a3b8';
             ctx.font = '7px IBM Plex Mono';
             ctx.textAlign = 'right';
             ctx.fillText('1', pad.l - 3, pad.t + 3);
@@ -1817,10 +1817,10 @@
                 ctx.beginPath();
                 ctx.lineWidth = ent.id === state.selected ? 2 : 1.2;
                 
-                if (ent.status === 'emerged') ctx.strokeStyle = '#3fb950';
-                else if (ent.status === 'exited') ctx.strokeStyle = '#f85149';
-                else if (ent.status === 'stalled') ctx.strokeStyle = '#d29922';
-                else ctx.strokeStyle = ent.id === state.selected ? '#58a6ff' : '#8b949e';
+                if (ent.status === 'emerged') ctx.strokeStyle = '#16a34a';
+                else if (ent.status === 'exited') ctx.strokeStyle = '#dc2626';
+                else if (ent.status === 'stalled') ctx.strokeStyle = '#d97706';
+                else ctx.strokeStyle = ent.id === state.selected ? '#2563eb' : '#64748b';
                 
                 ent.history.forEach((c, i) => {
                     const x = pad.l + i * xs;
@@ -1830,7 +1830,7 @@
                 ctx.stroke();
                 
                 // Reframe markers
-                ctx.fillStyle = '#d29922';
+                ctx.fillStyle = '#d97706';
                 ent.reframePoints.forEach(p => {
                     if (p < ent.history.length) {
                         ctx.beginPath();
@@ -1844,10 +1844,10 @@
                 const ly = pad.t + (1 - ent.history[ent.history.length - 1]) * ch;
                 ctx.beginPath();
                 ctx.arc(lx, ly, ent.id === state.selected ? 3 : 2, 0, Math.PI * 2);
-                if (ent.status === 'emerged') ctx.fillStyle = '#3fb950';
-                else if (ent.status === 'exited') ctx.fillStyle = '#f85149';
-                else if (ent.status === 'stalled') ctx.fillStyle = '#d29922';
-                else ctx.fillStyle = ent.id === state.selected ? '#58a6ff' : '#8b949e';
+                if (ent.status === 'emerged') ctx.fillStyle = '#16a34a';
+                else if (ent.status === 'exited') ctx.fillStyle = '#dc2626';
+                else if (ent.status === 'stalled') ctx.fillStyle = '#d97706';
+                else ctx.fillStyle = ent.id === state.selected ? '#2563eb' : '#64748b';
                 ctx.fill();
             });
         }
@@ -1867,18 +1867,18 @@
                 const anomalyCirc = 2 * Math.PI * 19;
                 const anomalyOffset = anomalyCirc * (1 - anomalyNorm);
                 
-                let strokeColor = '#8b949e';
-                if (ent.status === 'emerged') strokeColor = '#3fb950';
-                else if (ent.status === 'exited') strokeColor = '#f85149';
-                else if (ent.status === 'stalled') strokeColor = '#d29922';
-                else if (ent.confidence >= params.emergeThresh * 0.9) strokeColor = '#3fb950';
-                else if (ent.confidence <= params.exitThresh * 1.5) strokeColor = '#f85149';
+                let strokeColor = '#64748b';
+                if (ent.status === 'emerged') strokeColor = '#16a34a';
+                else if (ent.status === 'exited') strokeColor = '#dc2626';
+                else if (ent.status === 'stalled') strokeColor = '#d97706';
+                else if (ent.confidence >= params.emergeThresh * 0.9) strokeColor = '#16a34a';
+                else if (ent.confidence <= params.exitThresh * 1.5) strokeColor = '#dc2626';
                 
                 let html = `<svg viewBox="0 0 42 42">
                     <circle class="radial-bg" cx="21" cy="21" r="19"/>`;
                 
                 if (state.layers[3] && ent.status === 'pursuing') {
-                    html += `<circle class="radial-anomaly" cx="21" cy="21" r="19" stroke="#d29922"
+                    html += `<circle class="radial-anomaly" cx="21" cy="21" r="19" stroke="#d97706"
                         stroke-dasharray="${anomalyCirc}" stroke-dashoffset="${anomalyOffset}" transform="rotate(-90 21 21)"/>`;
                 }
                 
@@ -1959,7 +1959,7 @@
                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                     line.setAttribute('x1', cx); line.setAttribute('y1', cy);
                     line.setAttribute('x2', x); line.setAttribute('y2', y);
-                    line.setAttribute('stroke', isNew ? '#d29922' : DIM_COLORS[i]);
+                    line.setAttribute('stroke', isNew ? '#d97706' : DIM_COLORS[i]);
                     line.setAttribute('stroke-width', ent.frame.weights[idx] * 1.5);
                     line.setAttribute('opacity', 0.6);
                     svg.appendChild(line);
@@ -1968,8 +1968,8 @@
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 circle.setAttribute('cx', x); circle.setAttribute('cy', y);
                 circle.setAttribute('r', isActive ? 5 : 3);
-                circle.setAttribute('fill', isActive ? DIM_COLORS[i] : '#21262d');
-                circle.setAttribute('stroke', isNew ? '#d29922' : DIM_COLORS[i]);
+                circle.setAttribute('fill', isActive ? DIM_COLORS[i] : '#f1f5f9');
+                circle.setAttribute('stroke', isNew ? '#d97706' : DIM_COLORS[i]);
                 circle.setAttribute('stroke-width', isActive ? (isNew ? 1.5 : 0) : 0.5);
                 svg.appendChild(circle);
                 
@@ -1977,7 +1977,7 @@
                 text.setAttribute('x', x); text.setAttribute('y', y + 2);
                 text.setAttribute('text-anchor', 'middle');
                 text.setAttribute('font-size', '5'); text.setAttribute('font-weight', '600');
-                text.setAttribute('fill', isActive ? '#0d1117' : '#6e7681');
+                text.setAttribute('fill', isActive ? '#ffffff' : '#94a3b8');
                 text.textContent = i + 1;
                 svg.appendChild(text);
             }
