@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Georgia', serif;
+}
+
+.decomp-root {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 900px) {
+  .decomp-root .main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .decomp-root .metric-strip {
+    flex-direction: column !important;
+  }
+
+  .decomp-root .insight-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .decomp-root .zone-ref-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .decomp-root .three-group {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .decomp-root {
+    padding: 16px 12px !important;
+  }
+
+  .decomp-root h1 {
+    font-size: 18px !important;
+  }
+
+  .decomp-root .recharts-wrapper {
+    font-size: 0.75rem;
+  }
+}
